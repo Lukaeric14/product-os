@@ -1,7 +1,6 @@
 import type { ReactNode } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Layers, ArrowLeft } from 'lucide-react'
-import { PhaseNav } from './PhaseNav'
 import { ThemeToggle } from './ThemeToggle'
 import { Button } from '@/components/ui/button'
 
@@ -13,7 +12,7 @@ interface AppLayoutProps {
   backTo?: string
   /** Optional back label */
   backLabel?: string
-  /** Whether to show the phase nav (default: true) */
+  /** Whether to show the phase nav (default: false) */
   showPhaseNav?: boolean
 }
 
@@ -22,7 +21,6 @@ export function AppLayout({
   title,
   backTo,
   backLabel = 'Back',
-  showPhaseNav = true,
 }: AppLayoutProps) {
   const navigate = useNavigate()
 
@@ -59,24 +57,20 @@ export function AppLayout({
               </div>
             </div>
           ) : (
-            /* Main page header with phase nav - full width */
-            <div className="flex items-center justify-between gap-4">
-              {/* Theme Toggle on left for balance */}
-              <div className="w-10 shrink-0">
-                {/* Empty spacer for balance */}
-              </div>
-
-              {/* Phase Navigation - centered */}
-              {showPhaseNav && (
-                <div className="flex-1 flex justify-center">
-                  <PhaseNav />
+            /* Main page header */
+            <div className="max-w-3xl mx-auto flex items-center justify-between gap-4">
+              {/* Logo / Brand */}
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-lg bg-stone-900 dark:bg-stone-100 flex items-center justify-center">
+                  <Layers className="w-4 h-4 text-stone-100 dark:text-stone-900" strokeWidth={1.5} />
                 </div>
-              )}
+                <span className="font-semibold text-stone-900 dark:text-stone-100">
+                  Product OS
+                </span>
+              </div>
 
               {/* Theme Toggle */}
-              <div className="w-10 shrink-0 flex justify-end">
-                <ThemeToggle />
-              </div>
+              <ThemeToggle />
             </div>
           )}
         </div>
@@ -87,20 +81,11 @@ export function AppLayout({
         {children}
       </main>
 
-      {/* Footer with logo */}
+      {/* Footer */}
       <footer className="py-8 flex justify-center">
-        <a
-          href="https://buildermethods.com/design-os"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center gap-2 text-stone-400 dark:text-stone-500 hover:text-stone-600 dark:hover:text-stone-400 transition-colors group"
-        >
-          <span className="text-xs">Powered by</span>
-          <div className="w-5 h-5 rounded bg-stone-300 dark:bg-stone-600 flex items-center justify-center transition-colors group-hover:bg-stone-400 dark:group-hover:bg-stone-500">
-            <Layers className="w-3 h-3 text-stone-100 dark:text-stone-900" strokeWidth={1.5} />
-          </div>
-          <span className="text-xs font-medium">Design OS</span>
-        </a>
+        <span className="text-xs text-stone-400 dark:text-stone-500">
+          Keylead Product OS
+        </span>
       </footer>
     </div>
   )

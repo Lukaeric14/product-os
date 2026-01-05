@@ -1,0 +1,98 @@
+import { useState, useEffect } from 'react'
+import type { Sprint, PhaseId, FeatureFiles } from '@/types/sprint'
+
+const POLL_INTERVAL = 2000 // 2 seconds
+
+// Determine current phase based on which files exist
+function determineCurrentPhase(files: FeatureFiles): PhaseId {
+  if (files['prd.md'] && files['qa.md'] && files['linear-tickets.md'] && files['loom-outline.md']) {
+    return 'handoff'
+  }
+  if (files['prd.md']) return 'deliver'
+  if (files['develop-output.md']) return 'deliver'
+  if (files['problem-statement.md']) return 'develop'
+  if (files['discover-output.md']) return 'define'
+  if (files['inputs-summary.md']) return 'discover'
+  return 'start'
+}
+
+// Determine completed phases based on files
+function determineCompletedPhases(files: FeatureFiles): PhaseId[] {
+  const completed: PhaseId[] = []
+  if (files['inputs-summary.md']) completed.push('start')
+  if (files['discover-output.md']) completed.push('discover')
+  if (files['problem-statement.md']) completed.push('define')
+  if (files['develop-output.md']) completed.push('develop')
+  if (files['prd.md'] && files['qa.md'] && files['linear-tickets.md'] && files['loom-outline.md']) {
+    completed.push('deliver')
+  }
+  return completed
+}
+
+// Transform API response into typed Sprint data
+function transformSprints(data: any[]): Sprint[] {
+  return data.map(sprint => ({
+    week: sprint.week,
+    features: sprint.features.map((f: any) => ({
+      id: f.id,
+      name: f.name,
+      type: 'new' as const,
+      sprintWeek: f.sprintWeek,
+      files: f.files,
+      currentPhase: determineCurrentPhase(f.files),
+      completedPhases: determineCompletedPhases(f.files),
+      completedSteps: f.completedSteps || {},
+    })),
+  }))
+}
+
+export function useSprints() {
+  const [sprints, setSprints] = useState<Sprint[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    let mounted = true
+
+    const fetchSprints = async () => {
+      try {
+        const res = await fetch('/__api/sprints')
+        const data = await res.json()
+        if (mounted) {
+          setSprints(transformSprints(data))
+          setLoading(false)
+        }
+      } catch (err) {
+        console.error('Failed to fetch sprints:', err)
+        if (mounted) setLoading(false)
+      }
+    }
+
+    fetchSprints()
+    const interval = setInterval(fetchSprints, POLL_INTERVAL)
+
+    return () => {
+      mounted = false
+      clearInterval(interval)
+    }
+  }, [])
+
+  return { sprints, loading }
+}
+
+export function useFeature(week: string, name: string) {
+  const { sprints, loading } = useSprints()
+
+  const sprint = sprints.find(s => s.week === week)
+  const feature = sprint?.features.find(f => f.name === name) || null
+
+  return { feature, loading }
+}
+
+// Get current week in YYYY-WXX format
+export function getCurrentWeek(): string {
+  const now = new Date()
+  const startOfYear = new Date(now.getFullYear(), 0, 1)
+  const days = Math.floor((now.getTime() - startOfYear.getTime()) / (24 * 60 * 60 * 1000))
+  const weekNumber = Math.ceil((days + startOfYear.getDay() + 1) / 7)
+  return `${now.getFullYear()}-W${weekNumber.toString().padStart(2, '0')}`
+}
