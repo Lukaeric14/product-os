@@ -10,12 +10,7 @@ You are helping Luka finalize and generate all handoff materials.
 ## Prerequisites
 
 - `problem-statement.md` exists
-- `develop-output.md` exists
-- Luka has created Excalidraw wireframes
-
-Ask: "Have you created the Excalidraw wireframes (desktop, mobile, states)?"
-
-If no, remind them to do that first.
+- `develop-output.md` exists (includes ASCII wireframes)
 
 ## IMPORTANT: Write Progress to Files
 
@@ -27,40 +22,24 @@ Walk through these steps **one at a time**. Generate each deliverable, get appro
 
 ### Step 1: Review All
 
-Summarize:
+Summarize in conversation (NOT in the PRD file):
 - Problem statement
 - Chosen solution approach
 - Edge cases decided
 - Technical considerations
 
-Confirm ready to generate docs.
+Ask: "Any final changes before I generate the PRD?"
+
+### Step 2: Generate PRD
+
+Generate a comprehensive PRD. **Start directly with Summary — no "Review All" section in the PRD itself.**
+
+**PRD must include ASCII wireframes** — do NOT link to Excalidraw. Embed the wireframes from develop-output.md directly.
 
 **Write to `prd.md`:**
 ```markdown
 # PRD: [Feature Name]
 
-## Review All
-[Summary of all previous outputs - confirms context is loaded]
-```
-
-### Step 2: Finalize Approach
-
-Ask: "Any final changes before I generate the PRD?"
-
-Lock in the approach.
-
-**Append to `prd.md`:**
-```markdown
-## Finalize Approach
-[Final decisions locked in]
-```
-
-### Step 3: Generate PRD
-
-Generate a comprehensive PRD with these sections:
-
-**Append to `prd.md`:**
-```markdown
 ## 1. Summary
 [3-4 sentences - TL;DR]
 
@@ -83,10 +62,13 @@ Generate a comprehensive PRD with these sections:
 
 ## 6. How
 ### User Journey
-[numbered steps]
+[numbered steps for each key flow]
 
 ### Behavior Specs
 [detailed behavior for each component]
+
+### Pricing/Tier Structure (if applicable)
+[Full pricing tables with all options — be thorough]
 
 ### Edge Cases
 | Scenario | Behavior |
@@ -96,32 +78,42 @@ Generate a comprehensive PRD with these sections:
 ### Success Criteria
 - [ ] [criteria]
 
-## 7. Links
-- Designs: [Excalidraw link]
-- Related: [links]
+## 7. Wireframes
+
+### [Screen Name] (Desktop)
+```
+[ASCII wireframe]
+```
+
+### [Screen Name] (Mobile)
+```
+[ASCII wireframe]
+```
+
+## 8. Links
+- **Problem Statement:** `problem-statement.md`
+- **Develop Output:** `develop-output.md`
+- **Reference:** [any external references]
 ```
 
 Ask for feedback. Iterate if needed.
 
-### Step 4: Generate QA
+### Step 3: Generate QA
 
-Generate QA checklist for Ahmer.
+Generate QA checklist.
 
 **Write to `qa.md`:**
 ```markdown
 # QA Checklist: [Feature Name]
-
-## Generate QA
-[Confirmation that QA checklist is being generated]
 
 ## 1. Context
 **Feature:** [name]
 **User types:** [who to test as]
 
 ## 2. Test Account Setup
-| Account | Credentials | State Required |
-|---------|-------------|----------------|
-| ... | ... | ... |
+| Account | State Required |
+|---------|----------------|
+| ... | ... |
 
 ## 3. Pre-Test Setup
 - [ ] [setup step]
@@ -133,7 +125,7 @@ Generate QA checklist for Ahmer.
 - Expected: [exact outcome]
 
 ## 5. Edge Cases
-[specific weird scenarios]
+[specific weird scenarios to test]
 
 ## 6. Polish Check
 - [ ] [visual/UX check]
@@ -141,23 +133,24 @@ Generate QA checklist for Ahmer.
 
 Ask for feedback.
 
-### Step 5: Generate Tickets
+### Step 4: Generate Tickets
 
-Break down into Linear tickets.
+Break down into **4-5 Linear tickets maximum**. Keep them chunky, not granular.
 
 **Write to `linear-tickets.md`:**
 ```markdown
 # Linear Tickets: [Feature Name]
 
-## Generate Tickets
-[Confirmation that tickets are being generated]
+---
 
 ## Ticket 1: [Title]
 **Description:** [1-2 sentences]
 **Acceptance Criteria:**
 - [ ] [criteria]
 **Links:** PRD section X
-**Images:** [note which Excalidraw to attach]
+**Images:** Refer to wireframes in PRD
+
+---
 
 ## Ticket 2: [Title]
 ...
@@ -165,7 +158,7 @@ Break down into Linear tickets.
 
 Ask for feedback.
 
-### Step 6: Generate Loom
+### Step 5: Generate Loom Outline
 
 Generate a 5-minute video outline.
 
@@ -173,10 +166,9 @@ Generate a 5-minute video outline.
 ```markdown
 # Loom Outline: [Feature Name]
 
-## Generate Loom
-[Confirmation that Loom outline is being generated]
-
 **Total time:** ~5 minutes
+
+---
 
 ## 1. Context (1 min)
 **Show:** [what to show]
@@ -187,11 +179,11 @@ Generate a 5-minute video outline.
 **Cover:** [what]
 
 ## 3. User Flow (1.5 min)
-**Show:** Excalidraw wireframes
+**Show:** PRD wireframes
 **Cover:** [walk through]
 
 ## 4. Edge Cases (1 min)
-**Show:** PRD edge cases
+**Show:** PRD edge cases table
 **Cover:** [key decisions]
 
 ## 5. QA Focus (30 sec)
@@ -199,13 +191,12 @@ Generate a 5-minute video outline.
 **Cover:** [priorities]
 ```
 
-### Step 7: Package Check
+### Step 6: Package Check
 
 Verify all files exist:
-- [ ] prd.md
+- [ ] prd.md (with embedded wireframes)
 - [ ] qa.md
-- [ ] linear-tickets.md
+- [ ] linear-tickets.md (4-5 tickets max)
 - [ ] loom-outline.md
-- [ ] Excalidraw wireframes created (manual)
 
-Confirm: "All deliverables ready. Run `/handoff` to copy to keylead/.pm/"
+Confirm: "All deliverables ready. Run `/handoff` to commit, push, and draft Slack message."

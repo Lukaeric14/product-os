@@ -16,9 +16,15 @@ Read the keylead/ codebase for relevant context.
 
 After completing EACH step, append the output to `develop-output.md` in the feature folder. This allows the UI to track progress in real-time. Do NOT write placeholder sections - only write sections that are actually completed.
 
+## Communication Style
+
+- **Always be clear about what response you need** — end with a specific question
+- **Ask questions before proposing** — don't dump options without understanding preferences first
+- **One question at a time or small batches** — don't overwhelm with 10 questions at once
+
 ## Your Task
 
-Walk through these steps **one at a time**. Propose options, get reactions, iterate.
+Walk through these steps **one at a time**.
 
 ### Step 1: Review Problem
 
@@ -32,24 +38,52 @@ Show the problem statement. Confirm ready to explore solutions.
 [Problem statement and confirmation to proceed]
 ```
 
-### Step 2: UI Flow Options
+### Step 2: Brainstorm Flows
 
-Propose 2-3 approaches to solve this:
-- "Here are different ways to approach this: [A, B, C]"
-- Explain pros/cons of each
-- Ask: "What's your reaction? Any other approaches?"
+**DO NOT propose UI options yet.** First, brainstorm ALL possible user flows related to this feature.
 
-Document the options.
+Ask Luka questions to understand:
+- What flows need to exist?
+- What already exists in the codebase?
+- Where do these flows live in the product?
+
+Present a comprehensive list of flows, then ask:
+- "Which of these flows are in scope for this sprint?"
+- "What would you add or cut?"
+
+Get confirmation before proceeding.
+
+**Append to `develop-output.md`:**
+```markdown
+## Flows
+[All flows identified, marked as in-scope or out-of-scope]
+```
+
+### Step 3: UI Flow Questions
+
+**Still don't propose options.** Ask targeted questions about the in-scope flows:
+
+- Page structure preferences (single page vs tabs, etc.)
+- Component preferences (modal vs inline, etc.)
+- Interaction patterns
+- Any existing patterns to follow
+
+Ask 3-5 questions at a time. Get answers before proceeding.
+
+### Step 4: Design Decisions
+
+Summarize all decisions made from the Q&A. Confirm with Luka before moving to wireframes.
 
 **Append to `develop-output.md`:**
 ```markdown
 ## UI Flow
-[Options explored and chosen approach]
+[Design decisions documented]
 ```
 
-### Step 3: Desktop Wireframe
+### Step 5: Desktop Wireframe
 
-Create an ASCII wireframe for the preferred approach:
+NOW propose ASCII wireframes based on the decisions:
+
 ```
 ┌─────────────────────────────────┐
 │ Header                          │
@@ -60,7 +94,7 @@ Create an ASCII wireframe for the preferred approach:
 └─────────────────────────────────┘
 ```
 
-Explain the layout choices. Ask for feedback.
+Ask: "Does this layout work? Anything to change?"
 
 **Append to `develop-output.md`:**
 ```markdown
@@ -68,7 +102,7 @@ Explain the layout choices. Ask for feedback.
 [ASCII wireframe and explanation]
 ```
 
-### Step 4: Mobile Wireframe
+### Step 6: Mobile Wireframe
 
 **MOBILE IS NOT OPTIONAL.**
 
@@ -85,14 +119,16 @@ Ask: "Does this work for mobile users?"
 [ASCII wireframe for mobile]
 ```
 
-### Step 5: Edge Cases
+### Step 7: Edge Cases
 
-Based on the feature + keylead codebase, identify edge cases:
-- "Here are edge cases I see: [list]"
-- "What happens when X?"
-- "What if the user does Y?"
+Based on the feature + keylead codebase, identify edge cases.
 
-For each edge case, propose a behavior and get Luka's decision.
+For each edge case:
+- State the scenario
+- Propose a behavior
+- Ask: "Is this right?"
+
+Get explicit decisions for each.
 
 **Append to `develop-output.md`:**
 ```markdown
@@ -100,26 +136,24 @@ For each edge case, propose a behavior and get Luka's decision.
 [Edge cases identified with decisions]
 ```
 
-### Step 6: Codebase Risks
+### Step 8: Codebase Risks
 
 Analyze the keylead/ codebase:
 - What files/modules would this touch?
 - Any dependencies or conflicts?
 - Any technical constraints?
 
-Document findings.
+Add "Engineering Investigation Notes" for things engineers should check.
 
 **Append to `develop-output.md`:**
 ```markdown
 ## Codebase Risks
-[Technical considerations from keylead codebase]
+[Technical considerations + investigation notes for engineers]
 ```
 
-### Step 7: Trade-offs
+### Step 9: Trade-offs
 
-Compare the options:
-- "Option A is better for X, Option B is better for Y"
-- "Which trade-offs are acceptable?"
+List the trade-offs made and confirm they're acceptable.
 
 **Append to `develop-output.md`:**
 ```markdown
@@ -127,14 +161,12 @@ Compare the options:
 [Trade-offs accepted]
 ```
 
-### Step 8: Exit Check
+### Step 10: Exit Check
 
 Review everything:
 - "Do you have clear direction?"
 - "Has mobile been addressed?"
 - "Are edge cases answered?"
-
-Remind: "Now create your Excalidraw wireframes based on the ASCII proposals. Include desktop, mobile, and key states (empty, loading, error, success)."
 
 **Append to `develop-output.md`:**
 ```markdown
@@ -142,4 +174,4 @@ Remind: "Now create your Excalidraw wireframes based on the ASCII proposals. Inc
 [Confirmation that solution space is fully explored]
 ```
 
-Confirm: "Ready to run `/deliver` after Excalidraw is done?"
+Confirm: "Ready to run `/deliver`?"
