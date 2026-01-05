@@ -37,19 +37,37 @@ export function FeatureDetail() {
   }
 
   // Calculate completed phases using hybrid approach:
-  // - Start/Discover: use file existence (original behavior)
-  // - Define onwards: require all steps to be complete
+  // - Start/Discover: use exit file existence
+  // - Define/Develop: exit file exists OR all steps done
+  // - Deliver: all four output files must exist
   const isPhaseActuallyComplete = (phaseId: PhaseId): boolean => {
     const phaseData = getPhase(phaseId)
     if (!phaseData) return false
 
-    // For Start and Discover, use file-based completion
-    if (phaseId === 'start') return !!feature.files['inputs-summary.md']
-    if (phaseId === 'discover') return !!feature.files['discover-output.md']
+    // Check if exit file exists
+    const exitFileExists = phaseData.exitFile
+      ? !!feature.files[phaseData.exitFile as keyof typeof feature.files]
+      : false
 
-    // For Define onwards, require all steps to be complete
+    // For Start and Discover, use file-based completion only
+    if (phaseId === 'start' || phaseId === 'discover') {
+      return exitFileExists
+    }
+
+    // For Deliver, require all four output files
+    if (phaseId === 'deliver') {
+      return !!(
+        feature.files['prd.md'] &&
+        feature.files['qa.md'] &&
+        feature.files['linear-tickets.md'] &&
+        feature.files['loom-outline.md']
+      )
+    }
+
+    // For Define/Develop: complete if exit file exists OR all steps are done
     const stepsComplete = feature.completedSteps[phaseId] || []
-    return phaseData.steps.every(step => stepsComplete.includes(step.number))
+    const allStepsDone = phaseData.steps.every(step => stepsComplete.includes(step.number))
+    return exitFileExists || allStepsDone
   }
 
   const actualCompletedPhases: PhaseId[] = PHASES
@@ -63,12 +81,8 @@ export function FeatureDetail() {
 
   const displayPhase = selectedPhase || actualCurrentPhase
 
-  // Calculate phase completion based on all steps being complete
-  const phase = getPhase(displayPhase)
-  const phaseCompletedSteps = feature.completedSteps[displayPhase] || []
-  const isPhaseComplete = phase
-    ? phase.steps.every(step => phaseCompletedSteps.includes(step.number))
-    : false
+  // Use the same completion logic for the panel badge
+  const isPhaseComplete = isPhaseActuallyComplete(displayPhase)
 
   return (
     <AppLayout showPhaseNav={false} backTo="/" backLabel="Dashboard" title={feature.name}>

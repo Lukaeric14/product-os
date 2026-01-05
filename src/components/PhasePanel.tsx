@@ -38,15 +38,20 @@ export function PhasePanel({ phaseId, isComplete, files = {}, completedSteps = {
   // Get completed steps for this phase from content markers
   const phaseCompletedSteps = completedSteps[phaseId] || []
 
-  // File-based completion ONLY for Start phase (which uses individual file deliverables)
-  // Other phases use content-based detection from the API
-  const highestFileStep = phaseId === 'start' ? getHighestFileStep(phase.steps, files) : 0
+  // Find highest step with a completed file deliverable (workflow is sequential)
+  const highestFileStep = getHighestFileStep(phase.steps, files)
 
   // A step is complete if:
   // 1. It's in the completedSteps array from content markers, OR
-  // 2. (Start phase only) It's at or before the highest file-based completed step
+  // 2. It's at or before the highest file-based completed step (sequential workflow)
   const isStepComplete = (stepNumber: number) => {
-    return phaseCompletedSteps.includes(stepNumber) || stepNumber <= highestFileStep
+    // Check content markers
+    if (phaseCompletedSteps.includes(stepNumber)) return true
+
+    // If any later step has a file, this step must be done (sequential workflow)
+    if (stepNumber <= highestFileStep) return true
+
+    return false
   }
 
   return (

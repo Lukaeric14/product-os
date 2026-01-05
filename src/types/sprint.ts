@@ -136,15 +136,16 @@ export const PHASES: Phase[] = [
   {
     id: 'handoff',
     name: 'Handoff',
-    description: 'Copy deliverables to keylead/.pm/ for engineers',
+    description: 'Validate, commit, push, and notify stakeholders',
     command: '/handoff',
-    exitFile: '', // Special case - check keylead/.pm/
+    exitFile: '', // Special case - manual completion
     steps: [
-      { number: 1, title: 'Validate', description: 'Check all files exist', deliverable: 'Validation complete' },
-      { number: 2, title: 'Confirm Excalidraw', description: 'Wireframes created?', deliverable: 'Confirmed' },
-      { number: 3, title: 'Confirm Loom', description: 'Video recorded?', deliverable: 'Confirmed' },
-      { number: 4, title: 'Copy to Keylead', description: 'Write to .pm/ folder', deliverable: 'Files copied' },
-      { number: 5, title: 'Final Check', description: 'Ready for Monday?', deliverable: 'Handoff complete' },
+      { number: 1, title: 'Validate Deliverables', description: 'Check all files exist', deliverable: 'Validated' },
+      { number: 2, title: 'Confirm Excalidraw', description: 'Get wireframe link', deliverable: 'Link captured' },
+      { number: 3, title: 'Confirm Loom', description: 'Get video link', deliverable: 'Link captured' },
+      { number: 4, title: 'Pull, Commit, Push', description: 'Push to keylead repo', deliverable: 'Pushed' },
+      { number: 5, title: 'Draft Slack Message', description: 'Message for #engineering', deliverable: 'Drafted' },
+      { number: 6, title: 'Stakeholder Comms', description: 'Other messages needed?', deliverable: 'Complete' },
     ],
   },
 ]

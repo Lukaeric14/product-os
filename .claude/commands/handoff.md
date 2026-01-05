@@ -1,15 +1,15 @@
 ---
-description: Copy deliverables to keylead/.pm/ for engineers
+description: Validate, commit, push, and notify engineers
 allowed-tools: Read, Write, Bash, Glob, Grep, Edit
 ---
 
 # /handoff - Final Handoff
 
-You are helping Luka copy all deliverables to the keylead codebase for engineers to pull.
+You are helping Luka finalize and hand off the feature to engineers.
 
 ## Prerequisites
 
-Verify these files exist in the current feature folder:
+Files should exist in `keylead/sprints/YYYY-WXX/[feature-name]/`:
 - prd.md
 - qa.md
 - linear-tickets.md
@@ -20,80 +20,85 @@ Verify these files exist in the current feature folder:
 ### Step 1: Validate Deliverables
 
 Check each file exists and has content:
-- [ ] prd.md — has all 7 sections
+- [ ] prd.md — has all sections with wireframes
 - [ ] qa.md — has test cases
 - [ ] linear-tickets.md — has tickets broken down
-- [ ] loom-outline.md — has 5 sections
+- [ ] loom-outline.md — has video outline
 
 If anything is missing, tell Luka to run `/deliver` first.
 
 ### Step 2: Confirm Excalidraw
 
 Ask: "Have you created the Excalidraw wireframes?"
-Ask: "Where will they be stored? (Excalidraw link or local files?)"
+
+If yes: "What's the Excalidraw link?"
+
+If no: "Please create wireframes in Excalidraw based on the ASCII wireframes in the PRD, then share the link."
+
+Wait for the link before proceeding.
 
 ### Step 3: Confirm Loom
 
 Ask: "Have you recorded the Loom video?"
 
-If not: "Record it after handoff using the outline. Add the link to the PRD."
+If yes: "What's the Loom link?"
 
-### Step 4: Copy to Keylead
+If no: "You can record after handoff using loom-outline.md. I'll note it as pending in the Slack message."
 
-Create the directory and copy files:
+### Step 4: Pull, Commit, Push
 
-```
-keylead/.pm/sprints/YYYY-WXX/[feature-name]/
-├── prd.md
-├── qa.md
-├── linear-tickets.md
-├── loom-outline.md
-└── README.md (with links to Excalidraw, Loom)
-```
-
-Create a README.md with:
-```markdown
-# [Feature Name] - Handoff
-
-## Quick Links
-- **Loom:** [link - add after recording]
-- **Excalidraw:** [link]
-- **Linear Project:** [link - add after creating tickets]
-
-## Files
-- `prd.md` — Full PRD
-- `qa.md` — QA checklist for Ahmer
-- `linear-tickets.md` — Tickets to create in Linear
-
-## Status
-- [ ] Loom recorded
-- [ ] Linear tickets created
-- [ ] Ready for Monday kickoff
+```bash
+cd keylead
+git pull origin main
+git add sprints/YYYY-WXX/[feature-name]/
+git commit -m "Add [feature-name] PRD and deliverables for YYYY-WXX"
+git push origin main
 ```
 
-### Step 5: Final Confirmation
+Report the commit hash. If there are conflicts, help resolve them first.
+
+### Step 5: Draft Slack Message
+
+Generate a Slack message for #engineering:
+
+```
+Hey team! :rocket:
+
+**[Feature Name]** is ready for development.
+
+:page_facing_up: **PRD:** `keylead/sprints/YYYY-WXX/[feature-name]/prd.md`
+:white_check_mark: **QA Checklist:** `keylead/sprints/YYYY-WXX/[feature-name]/qa.md`
+:ticket: **Linear Tickets:** `keylead/sprints/YYYY-WXX/[feature-name]/linear-tickets.md`
+:art: **Excalidraw:** [link]
+:film_projector: **Loom Walkthrough:** [link or "coming soon"]
+
+Let me know if you have questions!
+```
+
+### Step 6: Stakeholder Communication
+
+Ask: "Any other stakeholders to notify? (e.g., Nima, design, customer success)"
+
+If yes:
+- Ask who and what the message should convey
+- Draft a customized message for each stakeholder
+- Include relevant context for their role
+
+If no: Proceed to confirmation.
 
 Output:
 ```
-✓ Handoff complete!
+Handoff complete!
 
-Files copied to: keylead/.pm/sprints/YYYY-WXX/[feature-name]/
+Commit: [hash]
+Files pushed to: keylead/sprints/YYYY-WXX/[feature-name]/
 
-Remaining manual steps:
-1. Record Loom video using loom-outline.md
-2. Create Linear tickets from linear-tickets.md
-3. Attach Excalidraw images to Linear tickets
-4. Commit and push keylead/ changes
-5. Ready for Monday 12pm kickoff!
-```
+Messages drafted:
+- #engineering — [copy above]
+- [other stakeholders if any]
 
-## Output
-
-```
-keylead/.pm/sprints/YYYY-WXX/[feature-name]/
-├── prd.md
-├── qa.md
-├── linear-tickets.md
-├── loom-outline.md
-└── README.md
+Remaining steps:
+1. Post messages to respective channels/people
+2. Record Loom video (if not done) and share link
+3. Create Linear tickets from linear-tickets.md
 ```
