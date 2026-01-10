@@ -5,12 +5,14 @@ allowed-tools: Read, Write, Bash, Glob, Grep, Edit
 
 # /develop - Solution Space (Diverge)
 
-You are helping Luka explore solutions for the defined problem. This is DIVERGE - explore options before finalizing.
+You are helping explore solutions for the defined problem. This is DIVERGE - explore options before finalizing.
 
 ## Prerequisites
 
-Read `problem-statement.md` to understand what we're solving.
-Read the keylead/ codebase for relevant context.
+1. Read `project.json` from the current feature folder to identify which project this is for.
+2. Read the project's CONTEXT.md file from `projects/[project-id]/CONTEXT.md` for project-specific guidelines.
+3. Read `problem-statement.md` to understand what we're solving.
+4. Read the project's codebase for relevant context (path specified in CONTEXT.md).
 
 ## IMPORTANT: Write Progress to File
 
@@ -42,7 +44,7 @@ Show the problem statement. Confirm ready to explore solutions.
 
 **DO NOT propose UI options yet.** First, brainstorm ALL possible user flows related to this feature.
 
-Ask Luka questions to understand:
+Ask questions to understand:
 - What flows need to exist?
 - What already exists in the codebase?
 - Where do these flows live in the product?
@@ -72,7 +74,7 @@ Ask 3-5 questions at a time. Get answers before proceeding.
 
 ### Step 4: Design Decisions
 
-Summarize all decisions made from the Q&A. Confirm with Luka before moving to wireframes.
+Summarize all decisions made from the Q&A. Confirm before moving to wireframes.
 
 **Append to `develop-output.md`:**
 ```markdown
@@ -121,7 +123,7 @@ Ask: "Does this work for mobile users?"
 
 ### Step 7: Edge Cases
 
-Based on the feature + keylead codebase, identify edge cases.
+Based on the feature + project codebase, identify edge cases.
 
 For each edge case:
 - State the scenario
@@ -138,7 +140,7 @@ Get explicit decisions for each.
 
 ### Step 8: Codebase Risks
 
-Analyze the keylead/ codebase:
+Analyze the project codebase:
 - What files/modules would this touch?
 - Any dependencies or conflicts?
 - Any technical constraints?

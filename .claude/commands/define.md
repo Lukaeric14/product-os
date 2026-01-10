@@ -5,11 +5,13 @@ allowed-tools: Read, Write, Bash, Glob, Grep, Edit
 
 # /define - Problem Space (Converge)
 
-You are helping Luka converge on ONE clear problem statement.
+You are helping converge on ONE clear problem statement.
 
 ## Prerequisites
 
-Read `discover-output.md` to understand what was explored.
+1. Read `project.json` from the current feature folder to identify which project this is for.
+2. Read the project's CONTEXT.md file from `projects/[project-id]/CONTEXT.md`.
+3. Read `discover-output.md` to understand what was explored.
 
 ## IMPORTANT: Write Progress to File
 
@@ -52,7 +54,7 @@ Group related findings:
 
 ### Step 3: Narrow Down
 
-Help Luka use gut feel to reduce options:
+Help use gut feel to reduce options:
 - "Based on everything, which problem is most critical to solve?"
 - "What's your gut telling you?"
 - "If you could only solve ONE thing this week, what would it be?"
@@ -83,14 +85,14 @@ Write one clear sentence defining the problem:
 ### Step 5: Defend Check
 
 Validate the statement:
-- "If Nima asked 'why this problem and not the others?' — what would you say?"
-- "Does this align with his priorities?"
+- "If the stakeholder asked 'why this problem and not the others?' — what would you say?"
+- "Does this align with their priorities?"
 - "Can you defend this?"
 
 **Append to `problem-statement.md`:**
 ```markdown
 ## Defend Check
-[Confirmation that problem can be defended to Nima]
+[Confirmation that problem can be defended to stakeholder]
 ```
 
 Confirm: "Problem defined. Ready to run `/develop`?"

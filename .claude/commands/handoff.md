@@ -5,11 +5,14 @@ allowed-tools: Read, Write, Bash, Glob, Grep, Edit
 
 # /handoff - Final Handoff
 
-You are helping Luka finalize and hand off the feature to engineers.
+You are helping finalize and hand off the feature to engineers.
 
 ## Prerequisites
 
-Files should exist in `keylead/sprints/YYYY-WXX/[feature-name]/`:
+1. Read `project.json` from the current feature folder to identify which project this is for.
+2. Read the project's CONTEXT.md file from `projects/[project-id]/CONTEXT.md` for git workflow details.
+
+Files should exist in the feature folder:
 - prd.md (with embedded ASCII wireframes)
 - qa.md
 - linear-tickets.md
@@ -25,7 +28,7 @@ Check each file exists and has content:
 - [ ] linear-tickets.md — has 4-5 tickets
 - [ ] loom-outline.md — has video outline
 
-If anything is missing, tell Luka to run `/deliver` first.
+If anything is missing, tell user to run `/deliver` first.
 
 ### Step 2: Confirm Loom
 
@@ -35,8 +38,14 @@ If no: "You can record after handoff using loom-outline.md. I'll add a placehold
 
 ### Step 3: Commit and Push
 
+Read `project.json` to get the project details, then use the appropriate git commands.
+
+The feature folder path pattern will be:
+- For Keylead: `keylead/sprints/YYYY-WXX/[feature-name]/`
+- For other projects: `projects/[project-id]/sprints/YYYY-WXX/[feature-name]/`
+
 ```bash
-cd keylead
+cd [project-path]
 git pull origin main
 git add sprints/YYYY-WXX/[feature-name]/
 git commit -m "Add [feature-name] sprint YYYY-WXX handoff"
@@ -47,7 +56,7 @@ Report the commit hash. If there are conflicts, help resolve them first.
 
 ### Step 4: Draft Slack Message
 
-Ask: "Is this for #engineering channel or a private chat with one engineer?"
+Ask: "Is this for a shared channel or a private chat with one engineer?"
 
 **For private chat (casual tone):**
 ```
@@ -55,7 +64,7 @@ hey! [feature-name] spec is ready for this week
 
 tldr: [one line description]
 
-files are in keylead/sprints/YYYY-WXX/[feature-name]/
+files are in [project-path]/sprints/YYYY-WXX/[feature-name]/
 - prd.md has the full spec + wireframes
 - linear-tickets.md has X tickets broken down
 
@@ -64,13 +73,13 @@ loom: [link or "will record and share"]
 lmk if anything's unclear
 ```
 
-**For #engineering channel (slightly more structured but still casual):**
+**For shared channel (slightly more structured but still casual):**
 ```
 [feature-name] is ready for YYYY-WXX
 
 what we're building: [one line]
 
-files: keylead/sprints/YYYY-WXX/[feature-name]/
+files: [project-path]/sprints/YYYY-WXX/[feature-name]/
 - prd.md — full spec + wireframes
 - qa.md — qa checklist
 - linear-tickets.md — X tickets
@@ -80,11 +89,11 @@ loom: [link or "coming soon"]
 questions? lmk
 ```
 
-Print the message so Luka can copy/paste.
+Print the message so user can copy/paste.
 
 ### Step 5: Other Stakeholders
 
-Ask: "Any other stakeholders to notify? (e.g., Nima, QA)"
+Ask: "Any other stakeholders to notify? (e.g., CEO, QA)"
 
 If yes: Draft a brief, casual message for each.
 
@@ -96,6 +105,7 @@ If no: Proceed.
 ```markdown
 # Handoff Complete
 
+**Project:** [Project Name]
 **Feature:** [Feature Name]
 **Sprint:** YYYY-WXX
 **Date:** [Today's date]
@@ -124,7 +134,7 @@ If no: Proceed.
 Handoff complete!
 
 Commit: [hash]
-Files: keylead/sprints/YYYY-WXX/[feature-name]/
+Files: [project-path]/sprints/YYYY-WXX/[feature-name]/
 
 Remaining:
 1. Post the Slack message above

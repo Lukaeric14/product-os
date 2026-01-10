@@ -23,6 +23,15 @@ export interface PhaseStep {
   deliverable: string
 }
 
+export interface Project {
+  id: string
+  name: string
+  description: string
+  path: string
+  sprintsPath: string
+  contextFile: string
+}
+
 export interface Feature {
   id: string
   name: string
@@ -32,9 +41,12 @@ export interface Feature {
   completedSteps: Record<string, number[]> // e.g., { discover: [1, 2, 3] }
   files: FeatureFiles
   sprintWeek: string // e.g., "2025-W02"
+  projectId: string // e.g., "keylead" or "nairon-slackapp"
+  projectName: string // e.g., "Keylead" or "Nairon Slack App"
 }
 
 export interface FeatureFiles {
+  'project.json'?: boolean
   'inputs-summary.md'?: boolean
   'raw-input-transcript.md'?: boolean
   'raw-input-slack.md'?: boolean
@@ -46,6 +58,7 @@ export interface FeatureFiles {
   'qa.md'?: boolean
   'linear-tickets.md'?: boolean
   'loom-outline.md'?: boolean
+  'handoff-complete.md'?: boolean
 }
 
 export interface Sprint {
@@ -62,13 +75,14 @@ export const PHASES: Phase[] = [
     command: '/start',
     exitFile: 'inputs-summary.md',
     steps: [
-      { number: 1, title: 'Create Directory', description: 'Set up feature folder', deliverable: 'Directory created' },
-      { number: 2, title: 'Feature Type', description: 'New feature or improvement?', deliverable: 'Type documented' },
-      { number: 3, title: 'Import Transcript', description: 'Paste Nima call transcript', deliverable: 'raw-input-transcript.md' },
-      { number: 4, title: 'Import Slack', description: 'Paste relevant Slack threads', deliverable: 'raw-input-slack.md' },
-      { number: 5, title: 'Import Feedback', description: 'Paste customer feedback', deliverable: 'raw-input-feedback.md' },
-      { number: 6, title: 'Design Links', description: 'Add Figma or design references', deliverable: 'Links captured' },
-      { number: 7, title: 'Summarize', description: 'Review all inputs', deliverable: 'inputs-summary.md' },
+      { number: 1, title: 'Select Project', description: 'Choose which project this is for', deliverable: 'project.json' },
+      { number: 2, title: 'Create Directory', description: 'Set up feature folder', deliverable: 'Directory created' },
+      { number: 3, title: 'Feature Type', description: 'New feature or improvement?', deliverable: 'Type documented' },
+      { number: 4, title: 'Import Transcript', description: 'Paste stakeholder call transcript', deliverable: 'raw-input-transcript.md' },
+      { number: 5, title: 'Import Slack', description: 'Paste relevant Slack threads', deliverable: 'raw-input-slack.md' },
+      { number: 6, title: 'Import Feedback', description: 'Paste customer feedback', deliverable: 'raw-input-feedback.md' },
+      { number: 7, title: 'Design Links', description: 'Add Figma or design references', deliverable: 'Links captured' },
+      { number: 8, title: 'Summarize', description: 'Review all inputs', deliverable: 'inputs-summary.md' },
     ],
   },
   {
@@ -97,7 +111,7 @@ export const PHASES: Phase[] = [
       { number: 2, title: 'Synthesize', description: 'Group findings into clusters', deliverable: 'Themes identified' },
       { number: 3, title: 'Narrow Down', description: 'Use gut feel to reduce options', deliverable: 'Options reduced' },
       { number: 4, title: 'Articulate', description: 'Write one-sentence problem', deliverable: 'One sentence' },
-      { number: 5, title: 'Defend Check', description: 'Can you defend to Nima?', deliverable: 'problem-statement.md' },
+      { number: 5, title: 'Defend Check', description: 'Can you defend to stakeholder?', deliverable: 'problem-statement.md' },
     ],
   },
   {
@@ -112,7 +126,7 @@ export const PHASES: Phase[] = [
       { number: 3, title: 'Desktop Wireframe', description: 'ASCII wireframe for desktop', deliverable: 'ASCII wireframe' },
       { number: 4, title: 'Mobile Wireframe', description: 'ASCII wireframe for mobile', deliverable: 'ASCII wireframe' },
       { number: 5, title: 'Edge Cases', description: 'Surface all "what ifs"', deliverable: 'Edge cases list' },
-      { number: 6, title: 'Codebase Risks', description: 'Analyze keylead/ impact', deliverable: 'Risks documented' },
+      { number: 6, title: 'Codebase Risks', description: 'Analyze project impact', deliverable: 'Risks documented' },
       { number: 7, title: 'Trade-offs', description: 'Evaluate options', deliverable: 'Trade-off analysis' },
       { number: 8, title: 'Exit Check', description: 'Ready to finalize?', deliverable: 'develop-output.md' },
     ],
@@ -138,14 +152,14 @@ export const PHASES: Phase[] = [
     name: 'Handoff',
     description: 'Validate, commit, push, and notify stakeholders',
     command: '/handoff',
-    exitFile: '', // Special case - manual completion
+    exitFile: 'handoff-complete.md',
     steps: [
       { number: 1, title: 'Validate Deliverables', description: 'Check all files exist', deliverable: 'Validated' },
       { number: 2, title: 'Confirm Excalidraw', description: 'Get wireframe link', deliverable: 'Link captured' },
       { number: 3, title: 'Confirm Loom', description: 'Get video link', deliverable: 'Link captured' },
-      { number: 4, title: 'Pull, Commit, Push', description: 'Push to keylead repo', deliverable: 'Pushed' },
-      { number: 5, title: 'Draft Slack Message', description: 'Message for #engineering', deliverable: 'Drafted' },
-      { number: 6, title: 'Stakeholder Comms', description: 'Other messages needed?', deliverable: 'Complete' },
+      { number: 4, title: 'Pull, Commit, Push', description: 'Push to project repo', deliverable: 'Pushed' },
+      { number: 5, title: 'Draft Slack Message', description: 'Message for team', deliverable: 'Drafted' },
+      { number: 6, title: 'Stakeholder Comms', description: 'Other messages needed?', deliverable: 'handoff-complete.md' },
     ],
   },
 ]

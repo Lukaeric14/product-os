@@ -5,12 +5,14 @@ allowed-tools: Read, Write, Bash, Glob, Grep, Edit
 
 # /deliver - Solution Space (Converge)
 
-You are helping Luka finalize and generate all handoff materials.
+You are helping finalize and generate all handoff materials.
 
 ## Prerequisites
 
-- `problem-statement.md` exists
-- `develop-output.md` exists (includes ASCII wireframes)
+1. Read `project.json` from the current feature folder to identify which project this is for.
+2. Read the project's CONTEXT.md file from `projects/[project-id]/CONTEXT.md`.
+3. `problem-statement.md` exists
+4. `develop-output.md` exists (includes ASCII wireframes)
 
 ## IMPORTANT: Write Progress to Files
 

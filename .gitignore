@@ -21,3 +21,6 @@ dist/
 # Logs
 *.log
 npm-debug.log*
+
+# Project repos (cloned for context, not committed)
+projects/nairon-slackapp/

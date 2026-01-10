@@ -1,0 +1,20 @@
+{
+  "projects": [
+    {
+      "id": "keylead",
+      "name": "Keylead",
+      "description": "Content scheduling SaaS for real estate agents",
+      "path": "keylead",
+      "sprintsPath": "keylead/sprints",
+      "contextFile": "projects/keylead/CONTEXT.md"
+    },
+    {
+      "id": "nairon-slackapp",
+      "name": "Nairon Slack App",
+      "description": "AI task tracking and product intelligence Slack bot",
+      "path": "projects/nairon-slackapp",
+      "sprintsPath": "projects/nairon-slackapp/sprints",
+      "contextFile": "projects/nairon-slackapp/CONTEXT.md"
+    }
+  ]
+}

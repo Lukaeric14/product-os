@@ -1,7 +1,7 @@
 # /handoff
 
 **Phase:** Final Step
-**Purpose:** Write all deliverables to keylead/.pm/ for engineers to pull
+**Purpose:** Commit, push, and notify engineers
 
 ---
 
@@ -16,9 +16,8 @@ Run after `/deliver` when all deliverables are complete and ready for engineers.
 Before running `/handoff`, ensure:
 - [ ] `/deliver` completed
 - [ ] All files generated (prd.md, qa.md, linear-tickets.md, loom-outline.md)
-- [ ] Excalidraw wireframes created
-- [ ] Loom video recorded
-- [ ] Linear tickets created (or ready to create)
+- [ ] ASCII wireframes embedded in PRD
+- [ ] Linear tickets ready to create
 
 ---
 
@@ -31,72 +30,100 @@ Before running `/handoff`, ensure:
 - Flag any missing items
 
 **Claude checks:**
-- [ ] prd.md exists and is complete
-- [ ] qa.md exists and is complete
+- [ ] prd.md exists with wireframes
+- [ ] qa.md exists
 - [ ] linear-tickets.md exists
 - [ ] loom-outline.md exists
-- [ ] Excalidraw files exist
 
 **Deliverable:** Validation complete
 
 ---
 
-### Step 2: Copy to Keylead
+### Step 2: Confirm Loom
 
 **What happens:**
-- Copy all deliverables to `keylead/.pm/sprints/YYYY-WXX/feature-name/`
-- This is where engineers will pull from
+- Ask if Loom video is recorded
+- Get link or note as pending
+
+**Deliverable:** Link captured (or pending)
+
+---
+
+### Step 3: Commit and Push
+
+**What happens:**
+- Pull latest from keylead
+- Add and commit feature files
+- Push to main
 
 **Claude does:**
-- Creates directory in keylead/.pm/ if needed
-- Copies all relevant files
-- Confirms files are in place
+```bash
+cd keylead
+git pull origin main
+git add sprints/YYYY-WXX/[feature-name]/
+git commit -m "Add [feature-name] sprint YYYY-WXX handoff"
+git push origin main
+```
 
-**Deliverable:** Files in keylead/.pm/
+**Deliverable:** Commit pushed
 
 ---
 
-### Step 3: Final Confirmation
+### Step 4: Draft Slack Message
 
 **What happens:**
-- Confirm handoff is complete
-- Ready for Monday kickoff
+- Draft message for engineers
+- Include file locations and Loom link
 
-**Claude outputs:**
-- Summary of what was handed off
-- Reminder of manual steps (Loom upload, Linear tickets)
-- "Ready for Monday"
-
-**Deliverable:** Handoff complete
+**Deliverable:** Message ready to copy/paste
 
 ---
 
-## What Gets Copied
+### Step 5: Other Stakeholders
+
+**What happens:**
+- Ask if anyone else needs to be notified
+- Draft additional messages if needed
+
+**Deliverable:** All messages drafted
+
+---
+
+### Step 6: Create Handoff Record
+
+**What happens:**
+- Write handoff-complete.md with all links and messages
+- Mark handoff as complete
+
+**Deliverable:** `handoff-complete.md`
+
+---
+
+## File Structure
 
 ```
-keylead/.pm/sprints/YYYY-WXX/feature-name/
+keylead/sprints/YYYY-WXX/[feature-name]/
 ├── prd.md
 ├── qa.md
 ├── linear-tickets.md
 ├── loom-outline.md
-└── designs/
-    └── (Excalidraw files or links)
+└── handoff-complete.md
 ```
 
 ---
 
-## Manual Steps Reminder
+## Manual Steps After Handoff
 
-After `/handoff`:
-1. Upload Loom video, add link to PRD
-2. Create Linear tickets from markdown (attach images)
-3. Commit and push keylead/ changes
+1. Post Slack message
+2. Record Loom video (if pending), share link
+3. Create Linear tickets from linear-tickets.md
 4. Ready for Monday kickoff
 
 ---
 
 ## Exit Criteria
 
-- All files in keylead/.pm/
+- All files committed and pushed
+- Slack message drafted
 - Engineers can pull and have everything
 - Ready for Monday 12pm kickoff

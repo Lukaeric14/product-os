@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react'
-import type { Sprint, PhaseId, FeatureFiles } from '@/types/sprint'
+import type { Sprint, PhaseId, FeatureFiles, Project } from '@/types/sprint'
 
 const POLL_INTERVAL = 2000 // 2 seconds
 
 // Determine current phase based on which files exist
 function determineCurrentPhase(files: FeatureFiles): PhaseId {
+  if (files['handoff-complete.md']) return 'handoff'
   if (files['prd.md'] && files['qa.md'] && files['linear-tickets.md'] && files['loom-outline.md']) {
     return 'handoff'
   }
@@ -26,18 +27,37 @@ function determineCompletedPhases(files: FeatureFiles): PhaseId[] {
   if (files['prd.md'] && files['qa.md'] && files['linear-tickets.md'] && files['loom-outline.md']) {
     completed.push('deliver')
   }
+  if (files['handoff-complete.md']) completed.push('handoff')
   return completed
 }
 
+// API response types
+interface ApiFeature {
+  id: string
+  name: string
+  sprintWeek: string
+  projectId?: string
+  projectName?: string
+  files: FeatureFiles
+  completedSteps?: Record<string, number[]>
+}
+
+interface ApiSprint {
+  week: string
+  features: ApiFeature[]
+}
+
 // Transform API response into typed Sprint data
-function transformSprints(data: any[]): Sprint[] {
+function transformSprints(data: ApiSprint[]): Sprint[] {
   return data.map(sprint => ({
     week: sprint.week,
-    features: sprint.features.map((f: any) => ({
+    features: sprint.features.map((f: ApiFeature) => ({
       id: f.id,
       name: f.name,
       type: 'new' as const,
       sprintWeek: f.sprintWeek,
+      projectId: f.projectId || 'unknown',
+      projectName: f.projectName || 'Unknown',
       files: f.files,
       currentPhase: determineCurrentPhase(f.files),
       completedPhases: determineCompletedPhases(f.files),
@@ -77,6 +97,37 @@ export function useSprints() {
   }, [])
 
   return { sprints, loading }
+}
+
+export function useProjects() {
+  const [projects, setProjects] = useState<Project[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    let mounted = true
+
+    const fetchProjects = async () => {
+      try {
+        const res = await fetch('/__api/projects')
+        const data = await res.json()
+        if (mounted) {
+          setProjects(data)
+          setLoading(false)
+        }
+      } catch (err) {
+        console.error('Failed to fetch projects:', err)
+        if (mounted) setLoading(false)
+      }
+    }
+
+    fetchProjects()
+
+    return () => {
+      mounted = false
+    }
+  }, [])
+
+  return { projects, loading }
 }
 
 export function useFeature(week: string, name: string) {

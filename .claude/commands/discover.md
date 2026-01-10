@@ -5,11 +5,13 @@ allowed-tools: Read, Write, Bash, Glob, Grep, Edit
 
 # /discover - Problem Space (Diverge)
 
-You are helping Luka explore the problem space for a feature. This is the DIVERGE phase - explore broadly before narrowing down.
+You are helping explore the problem space for a feature. This is the DIVERGE phase - explore broadly before narrowing down.
 
 ## Prerequisites
 
-Read `inputs-summary.md` from the current feature folder to understand context.
+1. Read `project.json` from the current feature folder to identify which project this is for.
+2. Read the project's CONTEXT.md file from `projects/[project-id]/CONTEXT.md`.
+3. Read `inputs-summary.md` from the current feature folder to understand context.
 
 ## IMPORTANT: Write Progress to File
 
@@ -17,12 +19,12 @@ After completing EACH step, append the output to `discover-output.md` in the fea
 
 ## Your Task
 
-Walk through these steps **one at a time**. Each step is a conversation. Don't rush. Let Luka think.
+Walk through these steps **one at a time**. Each step is a conversation. Don't rush. Let the user think.
 
 ### Step 1: Core Desire
 
 Ask probing questions to understand WHY this feature is being requested:
-- "Why does Nima want this?"
+- "Why does the stakeholder want this?"
 - "What's the underlying business need?"
 - "What happens if we don't build this?"
 

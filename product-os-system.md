@@ -2,28 +2,29 @@
 
 ## Overview
 
-Product OS is a structured workflow system for weekly product development at Keylead. It helps the Head of Product (Luka) prepare comprehensive handoff packages for engineers, reducing mid-week clarifications and ensuring features ship according to vision.
+Product OS is a structured workflow system for weekly product development. It helps product leads prepare comprehensive handoff packages for engineers, reducing mid-week clarifications and ensuring features ship according to vision.
+
+**Supports multiple projects** — each project has its own context file and sprint folder. Run `/start` to select which project you're working on.
 
 ---
 
 ## The Problem Being Solved
 
-**Current pain points:**
-- Luka spends 20 hrs/week, wants to get to 8-10 hrs
+**Common pain points:**
+- Product leads spend too much time on feature prep
 - PRDs lack edge cases and UI specs
 - Engineers make autonomous decisions mid-week that cause divergence
 - QA lacks context to test effectively
 - Features ship differently than envisioned
-- Luka is slow to respond, so engineers ship and fix later
 
 **Root causes:**
 - Not enough deep thinking upfront (edge cases, UI flows)
 - PRDs cover functionality but not UI
 - No structured process for comprehensive prep
-- Context lives in Luka's head, not in docs
+- Context lives in product lead's head, not in docs
 
-**Failure modes (why Nima isn't impressed on Friday):**
-1. Misalignment — didn't build what he asked
+**Failure modes:**
+1. Misalignment — didn't build what was asked
 2. Edge cases — users find holes
 3. Bad UX — didn't follow best practices
 
@@ -34,9 +35,9 @@ Product OS is a structured workflow system for weekly product development at Key
 ```
 FRIDAY
 ├── Company all-hands, demos
-├── Nima gives direction (2-3 commitments)
+├── Stakeholder gives direction (2-3 commitments)
 ├── Customer feedback surfaces
-└── Luka leaves with raw inputs
+└── Product lead leaves with raw inputs
 
 SATURDAY/SUNDAY (2-4 hrs)
 ├── For each commitment, run Double Diamond
@@ -44,26 +45,26 @@ SATURDAY/SUNDAY (2-4 hrs)
 └── Everything ready for Monday
 
 MONDAY
-├── 12pm: Kickoff call, present to Nima
+├── Kickoff call, present to stakeholder
 ├── Minor adjustments (10-15% changes typical)
-├── 1pm: Engineers pull and go
-└── Luka's involvement ends
+├── Engineers pull and go
+└── Product lead's involvement ends
 
 MON-THU
 ├── Engineers build autonomously
-├── Claude Code answers questions (has PRD + codebase context)
-└── Minimal pings to Luka
+├── AI agents answer questions (has PRD + codebase context)
+└── Minimal pings to product lead
 
 THU-FRI
 ├── Engineers deliver Thursday afternoon
-├── Ahmer (QA) tests in staging
+├── QA tests in staging
 ├── Uses Loom video + QA checklist
 ├── Back and forth with engineers to fix issues
 └── Ready for prod
 
 FRIDAY
 ├── Demo at all-hands
-├── Nima impressed
+├── Stakeholder impressed
 ├── In production, matches vision
 └── Cycle repeats
 ```
@@ -72,7 +73,7 @@ FRIDAY
 
 ## The Double Diamond Process
 
-For each commitment (2-3 per week), Luka runs a Double Diamond:
+For each commitment (2-3 per week), run a Double Diamond:
 
 ```
 ┌─────────────────────────────────┬─────────────────────────────────┐
@@ -115,7 +116,7 @@ For each commitment (2-3 per week), Luka runs a Double Diamond:
 - Synthesize what was discovered
 - Make the call on what problem to solve
 
-**Exit signal:** Can articulate the problem in one sentence and defend it to Nima.
+**Exit signal:** Can articulate the problem in one sentence and defend it to stakeholder.
 
 **Output:** One clear problem statement.
 
@@ -160,16 +161,16 @@ For each commitment (2-3 per week), Luka runs a Double Diamond:
 
 ---
 
-## Inputs (What Luka Works From)
+## Inputs (What Product Lead Works From)
 
 | Input | Source |
 |-------|--------|
 | Direction + priorities | Friday call transcript |
-| Customer problems | Feedback docs, Nima's notes |
+| Customer problems | Feedback docs, stakeholder notes |
 | Clarifications | Slack threads |
-| Current system | Keylead codebase |
+| Current system | Project codebase |
 | Visual direction | Figma designs |
-| Product judgment | Luka's head |
+| Product judgment | Product lead's expertise |
 
 ---
 
@@ -178,12 +179,13 @@ For each commitment (2-3 per week), Luka runs a Double Diamond:
 Each commitment produces:
 
 ```
-.pm/sprints/2025-W02/feature-name/
-├── prd.md              # Comprehensive PRD
-├── qa.md               # QA checklist for Ahmer
-├── designs/            # UI flows, mockups, state descriptions
+[project]/sprints/YYYY-WXX/feature-name/
+├── project.json        # Which project this is for
+├── prd.md              # Comprehensive PRD (with embedded wireframes)
+├── qa.md               # QA checklist
 ├── linear-tickets.md   # Tickets ready to create/paste
-└── loom-link.md        # Link to walkthrough video
+├── loom-outline.md     # Outline for walkthrough video
+└── handoff-complete.md # Handoff record with links
 ```
 
 ---
@@ -191,63 +193,45 @@ Each commitment produces:
 ## System Architecture
 
 ```
-product-os/                          # Luka's workspace
+product-os/                          # Workspace
 ├── src/                             # UI (guides the process)
-├── templates/                       # PRD, QA, handoff templates
-├── sprints/                         # Working files (drafts, inputs)
-│   └── 2025-W02/
-│       └── feature-a/
-│           ├── raw-input.md         # Messy inputs
-│           ├── objectives.md        # Refined objectives
-│           └── ...                  # Work in progress
+├── projects/                        # Project configurations
+│   ├── projects.json                # List of all projects
+│   ├── keylead/
+│   │   └── CONTEXT.md               # Keylead-specific context
+│   └── nairon-slackapp/
+│       ├── CONTEXT.md               # Nairon-specific context
+│       └── sprints/                 # Nairon sprint files
+│           └── YYYY-WXX/
+│               └── feature-name/
 │
-└── keylead/                         # Codebase (nested)
-    ├── client-app/
-    ├── content-server/
-    └── .pm/                         # Handoff destination
-        └── sprints/
-            └── 2025-W02/
-                └── feature-a/
-                    ├── prd.md           # Final PRD
-                    ├── qa.md            # QA checklist
-                    └── ...              # Ready for engineers
+├── keylead/                         # Keylead codebase (nested)
+│   ├── client-app/
+│   ├── content-server/
+│   └── sprints/                     # Keylead sprint files
+│       └── YYYY-WXX/
+│           └── feature-name/
+│
+└── workflow/                        # Workflow documentation
 ```
 
 **How it works:**
 - UI shows progress, guides through Double Diamond phases
 - Claude Code (terminal) does the heavy lifting via skills
 - Files are source of truth
-- Final handoff materials written INTO keylead/.pm/
-- Engineers pull keylead, have everything
+- Each project has its own CONTEXT.md for project-specific guidelines
+- Sprint files stay in the project's repo (engineers pull them with code)
 
 ---
 
 ## Key Roles
 
-**Luka (Head of Product)**
-- Runs the Double Diamond process on weekends
-- Makes convergent decisions (problem definition, solution trade-offs)
-- Records Loom walkthroughs
-- Presents at Monday kickoff
-- Near-zero involvement Mon-Thu
-
-**Engineers (Obaid, Abdi)**
-- Pull from keylead/.pm/ on Monday
-- Build autonomously using PRD + codebase context
-- Use Claude Code for clarifying questions
-- Deliver Thursday afternoon
-
-**QA (Ahmer)**
-- Works in Luka's name (feedback appears to come from Luka)
-- Ramps up via Loom video
-- Uses QA checklist to verify functionality
-- Trained on Luka's standards for polish/design
-- Goes back and forth with engineers Thu-Fri
-
-**Nima (CEO)**
-- Provides direction at Friday all-hands
-- Reviews plan at Monday kickoff (10-15% changes typical)
-- Impressed on Friday when features ship to vision
+| Role | Responsibilities |
+|------|-----------------|
+| **Product Lead** | Runs the Double Diamond process, makes convergent decisions, records Loom walkthroughs, presents at kickoff, near-zero involvement Mon-Thu |
+| **Engineers** | Pull from sprints/ on Monday, build autonomously using PRD + codebase context, use AI for clarifying questions, deliver Thursday afternoon |
+| **QA** | Ramps up via Loom video, uses QA checklist to verify functionality, goes back and forth with engineers Thu-Fri |
+| **Stakeholder** | Provides direction at all-hands, reviews plan at kickoff, impressed on Friday when features ship to vision |
 
 ---
 
@@ -269,15 +253,16 @@ Engineers need:
 | **2. Why** | Context, business reason, customer pain |
 | **3. What** | Scope, goals |
 | **4. Out of Scope** | Explicit boundaries — what we're NOT doing |
-| **5. Where** | Product pointers — where in the product this lives (e.g., "Settings page for user profile") |
+| **5. Where** | Product pointers — where in the product this lives |
 | **6. How** | Behavior specs, edge cases, user journey, success criteria |
-| **7. Links** | Figma, references, related docs |
+| **7. Wireframes** | ASCII wireframes for desktop + mobile |
+| **8. Links** | References, related docs |
 
 ---
 
 ## QA Checklist Structure
 
-Ahmer needs hyper-specific instructions with exact expected outcomes.
+QA needs hyper-specific instructions with exact expected outcomes.
 
 | Section | What it covers |
 |---------|----------------|
@@ -300,18 +285,18 @@ Ahmer needs hyper-specific instructions with exact expected outcomes.
 
 | Feature Type | Design Deliverable |
 |--------------|-------------------|
-| New feature | Excalidraw wireframes (Claude proposes ASCII → Luka refines in Excalidraw) |
+| New feature | ASCII wireframes in PRD |
 | Improvement | Annotated screenshots |
 | Both | Desktop + mobile required |
 
 **Workflow:**
 1. **Develop phase**: Claude proposes ASCII wireframes to react to
-2. **Luka**: Recreates/refines in Excalidraw — multiple screens, states, edge cases
+2. **Product lead**: Refines wireframes, covers multiple screens, states, edge cases
 3. **Mobile is forced**: Can't skip thinking about mobile layouts
-4. **Deliver phase**: Excalidraw files attached to PRD (linked in "Links" section)
-5. **PRD stays clean**: References sketches, doesn't contain ASCII bloat
+4. **Deliver phase**: Wireframes embedded directly in PRD
+5. **PRD stays clean**: ASCII wireframes inline, not external links
 
-**What Excalidraw should cover:**
+**What wireframes should cover:**
 - Desktop layout
 - Mobile layout
 - Key states (empty, loading, error, success)
@@ -323,7 +308,7 @@ Ahmer needs hyper-specific instructions with exact expected outcomes.
 
 **Organization:**
 - One project per engineer per week (sometimes 2 if load is low)
-- Tickets broken down to achieve project goal
+- Tickets broken down to achieve project goal (4-5 max)
 
 **Each ticket contains:**
 | Element | Details |
@@ -332,15 +317,13 @@ Ahmer needs hyper-specific instructions with exact expected outcomes.
 | **Description** | Brief — 1-2 sentences, PRD has the detail |
 | **Link to PRD** | For full context |
 | **Acceptance criteria** | 3-5 bullets — how to know it's done |
-| **Images** | Excalidraw wireframes / annotated screenshots attached directly |
-
-Engineers work from Linear — visuals are right in the ticket, PRD is there for deeper context.
+| **Images** | Reference wireframes in PRD |
 
 ---
 
 ## Loom Video Outline
 
-Claude generates an outline — Luka follows it, adds his own words.
+Claude generates an outline — product lead follows it, adds their own words.
 
 **Format (5 min total):**
 
@@ -348,14 +331,9 @@ Claude generates an outline — Luka follows it, adds his own words.
 |---------|------|----------------|-------|
 | **1. Context** | 1 min | Current platform in staging | Why we're building this, what problem it solves |
 | **2. What We're Building** | 1 min | PRD summary section | Scope overview, what's in/out |
-| **3. User Flow** | 1.5 min | Excalidraw wireframes | Walk through the flow, desktop + mobile |
-| **4. Edge Cases** | 1 min | PRD edge cases section | What's already decided, no need to ask |
+| **3. User Flow** | 1.5 min | PRD wireframes | Walk through the flow, desktop + mobile |
+| **4. Edge Cases** | 1 min | PRD edge cases table | What's already decided, no need to ask |
 | **5. QA Focus** | 30 sec | QA checklist | What to test, which accounts, which flows |
-
-The outline tells Luka:
-- What section to cover
-- What to show on screen
-- Key points to hit
 
 ---
 
@@ -365,12 +343,12 @@ The outline tells Luka:
 
 | Command | Phase | Purpose |
 |---------|-------|---------|
-| `/start` | Initialize | Create directory, capture raw inputs |
+| `/start` | Initialize | Select project, create directory, capture raw inputs |
 | `/discover` | Problem - Diverge | Explore problem broadly |
 | `/define` | Problem - Converge | Narrow to one problem statement |
 | `/develop` | Solution - Diverge | Explore solutions, wireframes, edge cases |
 | `/deliver` | Solution - Converge | Generate PRD, QA, Linear tickets, Loom outline |
-| `/handoff` | Final | Write everything to keylead/.pm/ |
+| `/handoff` | Final | Commit, push, notify engineers |
 | `/status` | Utility | Check where you are anytime |
 
 **Full documentation:** See `workflow/` folder for detailed steps per command.
@@ -381,16 +359,17 @@ The outline tells Luka:
 
 **Architecture:** Vite + React, reads files at build time using `import.meta.glob`. Hot-reloads in dev mode, manual refresh button for updates.
 
-**State detection:** File existence determines phase completion (Option A)
+**State detection:** File existence determines phase completion
 
 | File exists | Phase complete |
 |-------------|----------------|
+| `project.json` | Feature initialized |
 | `inputs-summary.md` | /start |
 | `discover-output.md` | /discover |
 | `problem-statement.md` | /define |
 | `develop-output.md` | /develop |
 | `prd.md` + `qa.md` + `linear-tickets.md` + `loom-outline.md` | /deliver |
-| Files in `keylead/.pm/` | /handoff |
+| `handoff-complete.md` | /handoff |
 
 ---
 
@@ -410,10 +389,11 @@ The outline tells Luka:
 - Copy command button
 - Exit criteria
 
-**3. Feature Selector**
-- List of features for current week
+**3. Project/Feature Selector**
+- List of projects
+- Features for current week per project
 - Status of each
-- Switch between features
+- Switch between projects/features
 
 **4. Refresh Button**
 - Reload files to update state after Claude Code writes outputs
@@ -424,10 +404,10 @@ The outline tells Luka:
 
 | Route | What it shows |
 |-------|---------------|
-| `/` | Dashboard — current week's features, overall status |
+| `/` | Dashboard — all projects, current week's features, overall status |
 | `/feature/:name` | Feature detail — phase progress, current phase panel |
 | `/feature/:name/:phase` | Phase detail — full checklist, outputs viewer |
 
 ---
 
-*Document created during consulting session, January 2025*
+*Product OS - Sprint-based feature development workflow*

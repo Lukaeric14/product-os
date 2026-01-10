@@ -1,8 +1,20 @@
 import { defineConfig } from 'vite'
+import type { ViteDevServer } from 'vite'
+import type { IncomingMessage, ServerResponse } from 'http'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import path from 'path'
 import fs from 'fs'
+
+// Project configuration interface
+interface ProjectConfig {
+  id: string
+  name: string
+  description: string
+  path: string
+  sprintsPath: string
+  contextFile: string
+}
 
 // Step markers to look for in each phase's output file
 const PHASE_STEP_MARKERS: Record<string, { file: string; markers: string[] }> = {
@@ -77,58 +89,127 @@ function getCompletedSteps(featureDir: string): Record<string, number[]> {
   return completedSteps
 }
 
+// Read project.json from feature folder to get project info
+function getFeatureProject(featureDir: string): { projectId: string; projectName: string } | null {
+  const projectJsonPath = path.join(featureDir, 'project.json')
+  if (fs.existsSync(projectJsonPath)) {
+    try {
+      const content = fs.readFileSync(projectJsonPath, 'utf-8')
+      const data = JSON.parse(content)
+      return {
+        projectId: data.projectId || 'unknown',
+        projectName: data.projectName || 'Unknown'
+      }
+    } catch {
+      return null
+    }
+  }
+  return null
+}
+
+// Load projects configuration
+function loadProjectsConfig(): ProjectConfig[] {
+  const projectsJsonPath = path.resolve(__dirname, 'projects/projects.json')
+  if (fs.existsSync(projectsJsonPath)) {
+    try {
+      const content = fs.readFileSync(projectsJsonPath, 'utf-8')
+      const data = JSON.parse(content)
+      return data.projects || []
+    } catch {
+      return []
+    }
+  }
+  return []
+}
+
+interface SprintData {
+  week: string
+  features: FeatureData[]
+}
+
+interface FeatureData {
+  id: string
+  name: string
+  sprintWeek: string
+  projectId: string
+  projectName: string
+  files: Record<string, boolean>
+  completedSteps: Record<string, number[]>
+}
+
 // Plugin to serve sprint data from filesystem at runtime
 function sprintApiPlugin() {
   return {
     name: 'sprint-api',
-    configureServer(server: any) {
-      server.middlewares.use('/__api/sprints', (_req: any, res: any) => {
-        const sprintsDir = path.resolve(__dirname, 'keylead/sprints')
-        const sprints: any[] = []
+    configureServer(server: ViteDevServer) {
+      // Serve projects list
+      server.middlewares.use('/__api/projects', (_req: IncomingMessage, res: ServerResponse) => {
+        const projects = loadProjectsConfig()
+        res.setHeader('Content-Type', 'application/json')
+        res.end(JSON.stringify(projects))
+      })
 
-        if (!fs.existsSync(sprintsDir)) {
-          res.setHeader('Content-Type', 'application/json')
-          res.end(JSON.stringify([]))
-          return
-        }
+      // Serve sprints data from all projects
+      server.middlewares.use('/__api/sprints', (_req: IncomingMessage, res: ServerResponse) => {
+        const projects = loadProjectsConfig()
+        const allSprints: SprintData[] = []
 
-        // Read sprint weeks
-        const weeks = fs.readdirSync(sprintsDir).filter(f =>
-          fs.statSync(path.join(sprintsDir, f)).isDirectory() && /^\d{4}-W\d{2}$/.test(f)
-        )
+        for (const project of projects) {
+          const sprintsDir = path.resolve(__dirname, project.sprintsPath)
 
-        for (const week of weeks) {
-          const weekDir = path.join(sprintsDir, week)
-          const featureDirs = fs.readdirSync(weekDir).filter(f =>
-            fs.statSync(path.join(weekDir, f)).isDirectory()
+          if (!fs.existsSync(sprintsDir)) {
+            continue
+          }
+
+          // Read sprint weeks
+          const weeks = fs.readdirSync(sprintsDir).filter(f =>
+            fs.statSync(path.join(sprintsDir, f)).isDirectory() && /^\d{4}-W\d{2}$/.test(f)
           )
 
-          const features = featureDirs.map(name => {
-            const featureDir = path.join(weekDir, name)
-            const files = fs.readdirSync(featureDir).filter(f => f.endsWith('.md'))
-            const fileMap: Record<string, boolean> = {}
-            files.forEach(f => fileMap[f] = true)
+          for (const week of weeks) {
+            const weekDir = path.join(sprintsDir, week)
+            const featureDirs = fs.readdirSync(weekDir).filter(f =>
+              fs.statSync(path.join(weekDir, f)).isDirectory()
+            )
 
-            // Get completed steps from file content
-            const completedSteps = getCompletedSteps(featureDir)
+            const features = featureDirs.map(name => {
+              const featureDir = path.join(weekDir, name)
+              const files = fs.readdirSync(featureDir).filter(f => f.endsWith('.md') || f.endsWith('.json'))
+              const fileMap: Record<string, boolean> = {}
+              files.forEach(f => fileMap[f] = true)
 
-            return {
-              id: `${week}/${name}`,
-              name,
-              sprintWeek: week,
-              files: fileMap,
-              completedSteps,
+              // Get completed steps from file content
+              const completedSteps = getCompletedSteps(featureDir)
+
+              // Get project info from project.json in feature folder
+              const featureProject = getFeatureProject(featureDir)
+
+              return {
+                id: `${project.id}/${week}/${name}`,
+                name,
+                sprintWeek: week,
+                projectId: featureProject?.projectId || project.id,
+                projectName: featureProject?.projectName || project.name,
+                files: fileMap,
+                completedSteps,
+              }
+            })
+
+            // Find existing sprint for this week or create new
+            let sprint = allSprints.find(s => s.week === week)
+            if (!sprint) {
+              sprint = { week, features: [] }
+              allSprints.push(sprint)
             }
-          })
-
-          sprints.push({ week, features })
+            sprint.features.push(...features)
+          }
         }
 
         // Sort newest first
-        sprints.sort((a, b) => b.week.localeCompare(a.week))
+        allSprints.sort((a, b) => b.week.localeCompare(a.week))
 
         res.setHeader('Content-Type', 'application/json')
-        res.end(JSON.stringify(sprints))
+        res.end(JSON.stringify(allSprints))
       })
     },
   }
