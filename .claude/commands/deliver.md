@@ -22,7 +22,21 @@ Write each deliverable to its own file as you complete it. This allows the UI to
 
 Walk through these steps **one at a time**. Generate each deliverable, get approval, then move on.
 
-### Step 1: Review All
+### Step 1: Select Deliverables
+
+Ask: "Which deliverables do you need?"
+
+Options:
+- **PRD** (required) — Full spec with wireframes
+- **QA Checklist** — Test cases for QA team
+- **Linear Tickets** — Pre-written tickets for engineers
+- **Loom Outline** — Video script for walkthrough
+
+User can select multiple. PRD is always required.
+
+Store selections for later steps. For unselected items, create placeholder files with "**Status:** Skipped" at the end.
+
+### Step 2: Review All
 
 Summarize in conversation (NOT in the PRD file):
 - Problem statement
@@ -32,7 +46,7 @@ Summarize in conversation (NOT in the PRD file):
 
 Ask: "Any final changes before I generate the PRD?"
 
-### Step 2: Generate PRD
+### Step 3: Generate PRD
 
 Generate a comprehensive PRD. **Start directly with Summary — no "Review All" section in the PRD itself.**
 
@@ -89,7 +103,7 @@ Generate a comprehensive PRD. **Start directly with Summary — no "Review All" 
 
 ### [Screen Name] (Mobile)
 ```
-[ASCII wireframe]
+[ASCII wireframe or "Not supported"]
 ```
 
 ## 8. Links
@@ -100,7 +114,9 @@ Generate a comprehensive PRD. **Start directly with Summary — no "Review All" 
 
 Ask for feedback. Iterate if needed.
 
-### Step 3: Generate QA
+### Step 4: Generate QA (if selected)
+
+**Skip if not selected in Step 1.**
 
 Generate QA checklist.
 
@@ -135,7 +151,9 @@ Generate QA checklist.
 
 Ask for feedback.
 
-### Step 4: Generate Tickets
+### Step 5: Generate Tickets (if selected)
+
+**Skip if not selected in Step 1.**
 
 Break down into **4-5 Linear tickets maximum**. Keep them chunky, not granular.
 
@@ -160,7 +178,9 @@ Break down into **4-5 Linear tickets maximum**. Keep them chunky, not granular.
 
 Ask for feedback.
 
-### Step 5: Generate Loom Outline
+### Step 6: Generate Loom Outline (if selected)
+
+**Skip if not selected in Step 1.**
 
 Generate a 5-minute video outline.
 
@@ -193,12 +213,24 @@ Generate a 5-minute video outline.
 **Cover:** [priorities]
 ```
 
-### Step 6: Package Check
+### Step 7: Create Skipped Placeholders
 
-Verify all files exist:
+For any deliverables NOT selected in Step 1, create placeholder files:
+
+```markdown
+# [Deliverable Name]
+
+**Status:** Skipped
+```
+
+This ensures the UI shows proper completion state.
+
+### Step 8: Package Check
+
+Verify all files exist (including skipped placeholders):
 - [ ] prd.md (with embedded wireframes)
-- [ ] qa.md
-- [ ] linear-tickets.md (4-5 tickets max)
-- [ ] loom-outline.md
+- [ ] qa.md (content or skipped)
+- [ ] linear-tickets.md (content or skipped)
+- [ ] loom-outline.md (content or skipped)
 
-Confirm: "All deliverables ready. Run `/handoff` to commit, push, and draft Slack message."
+Confirm: "All deliverables ready. Run `/handoff` to commit and hand off."

@@ -17,9 +17,7 @@ First, read `projects/projects.json` to get the list of available projects.
 
 Ask: "Which project is this feature for?"
 
-Present the options:
-1. **Keylead** - Content scheduling SaaS for real estate agents
-2. **Nairon Slack App** - AI task tracking and product intelligence Slack bot
+Present the options dynamically from projects.json.
 
 Store the selected project ID for later steps.
 
@@ -27,65 +25,76 @@ Store the selected project ID for later steps.
 
 Ask: "What's the name of this feature? (e.g., credits-billing, epic-dashboard)"
 
-Then create the directory structure based on the selected project:
+Then create the directory structure. Read the project config from `projects/projects.json` to get the `sprintsPath` for the selected project.
 
-**For Keylead:**
-```
-keylead/sprints/YYYY-WXX/[feature-name]/
-```
+Use the current week number (YYYY-WXX format).
 
-**For Nairon Slack App:**
-```
-projects/nairon-slackapp/sprints/YYYY-WXX/[feature-name]/
-```
+Create a `project.json` file in the feature folder (see Step 3 for full schema).
 
-Use the current week number.
+### Step 3: Git Commit Target
 
-Create a `project.json` file in the feature folder to track which project this is:
+Ask: "Where should handoff files be committed at the end?"
+
+Options:
+1. **Project repo** — Commit to the project's own git repo (e.g., nairon-slackapp has its own .git)
+2. **Product OS repo** — Commit to the product-os repo
+3. **Don't commit** — Keep files local, manual commit later
+
+Store the answer in `project.json`:
 ```json
 {
   "projectId": "[selected-project-id]",
   "projectName": "[selected-project-name]",
   "featureName": "[feature-name]",
   "sprintWeek": "YYYY-WXX",
-  "createdAt": "[ISO date]"
+  "createdAt": "[ISO date]",
+  "commitTarget": "project-repo" | "product-os" | "none"
 }
 ```
 
-### Step 3: Feature Type
+**Important:** If user selects "Project repo", verify the project has its own .git folder:
+```bash
+ls -la [project-path]/.git
+```
+If no .git exists, warn the user and ask them to choose another option.
+
+### Step 4: Feature Type
 
 Ask: "Is this a new feature or improvement to existing?"
 
 Document the answer.
 
-### Step 4: Import Transcript
+### Step 5: Import Transcript
 
-Ask: "Do you have a transcript from the stakeholder call? Paste it here."
+Ask: "Do you have a transcript from the stakeholder call? Paste it here. (or 'skip')"
 
-Save to `raw-input-transcript.md`
+Save to `raw-input-transcript.md` if provided.
 
-### Step 5: Import Slack Threads
+### Step 6: Import Slack Threads
 
 Ask: "Any Slack threads related to this feature? Paste them here. (or 'skip')"
 
+If user pastes a screenshot, read it and transcribe the content.
+
 Save to `raw-input-slack.md` if provided.
 
-### Step 6: Import Customer Feedback
+### Step 7: Import Customer Feedback
 
 Ask: "Any customer feedback driving this? Paste it here. (or 'skip')"
 
 Save to `raw-input-feedback.md` if provided.
 
-### Step 7: Capture Design Links
+### Step 8: Capture Design Links
 
 Ask: "Any existing Figma links or design references? (or 'skip')"
 
 Note these for later.
 
-### Step 8: Summarize Inputs
+### Step 9: Summarize Inputs
 
 Summarize everything captured:
 - Project and feature name
+- Commit target
 - Feature type
 - Key points from transcript
 - Key points from Slack
@@ -98,21 +107,10 @@ Confirm: "Inputs captured. Ready to run `/discover`?"
 
 ## File Structure Created
 
-**For Keylead:**
 ```
-keylead/sprints/YYYY-WXX/[feature-name]/
+[sprintsPath]/YYYY-WXX/[feature-name]/
 ├── project.json
-├── raw-input-transcript.md
-├── raw-input-slack.md (if provided)
-├── raw-input-feedback.md (if provided)
-└── inputs-summary.md
-```
-
-**For Nairon Slack App:**
-```
-projects/nairon-slackapp/sprints/YYYY-WXX/[feature-name]/
-├── project.json
-├── raw-input-transcript.md
+├── raw-input-transcript.md (if provided)
 ├── raw-input-slack.md (if provided)
 ├── raw-input-feedback.md (if provided)
 └── inputs-summary.md
@@ -120,4 +118,6 @@ projects/nairon-slackapp/sprints/YYYY-WXX/[feature-name]/
 
 ## Important
 
-The `project.json` file is critical - other commands will read it to know which project context to use.
+The `project.json` file is critical - other commands will read it to know:
+- Which project context to use
+- Where to commit handoff files

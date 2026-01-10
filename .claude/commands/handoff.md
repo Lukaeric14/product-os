@@ -9,97 +9,111 @@ You are helping finalize and hand off the feature to engineers.
 
 ## Prerequisites
 
-1. Read `project.json` from the current feature folder to identify which project this is for.
-2. Read the project's CONTEXT.md file from `projects/[project-id]/CONTEXT.md` for git workflow details.
-
-Files should exist in the feature folder:
-- prd.md (with embedded ASCII wireframes)
-- qa.md
-- linear-tickets.md
-- loom-outline.md
+1. Read `project.json` from the current feature folder to identify:
+   - Which project this is for
+   - Where to commit files (`commitTarget`)
+2. Read the project's CONTEXT.md file from `projects/[project-id]/CONTEXT.md` for project-specific context.
 
 ## Your Task
 
 ### Step 1: Validate Deliverables
 
-Check each file exists and has content:
-- [ ] prd.md — has all sections with wireframes embedded
-- [ ] qa.md — has test cases
-- [ ] linear-tickets.md — has 4-5 tickets
-- [ ] loom-outline.md — has video outline
+Check which files exist in the feature folder:
+- prd.md (required)
+- qa.md (optional)
+- linear-tickets.md (optional)
+- loom-outline.md (optional)
 
-If anything is missing, tell user to run `/deliver` first.
+**PRD is required.** If missing, tell user to run `/deliver` first.
+
+For other files, if missing ask: "I see [file] is missing. Was this skipped intentionally?"
+- If yes: Create a placeholder file with "**Status:** Skipped" and continue
+- If no: Tell user to run `/deliver` to generate it
 
 ### Step 2: Confirm Loom
 
-Ask: "Have you recorded the Loom video?"
+Ask: "Have you recorded the Loom video? (or 'skip')"
 
-If no: "You can record after handoff using loom-outline.md. I'll add a placeholder link."
+If skip: Note as skipped, continue.
 
 ### Step 3: Commit and Push
 
-Read `project.json` to get the project details, then use the appropriate git commands.
+Read `commitTarget` from `project.json` to determine where to commit.
 
-The feature folder path pattern will be:
-- For Keylead: `keylead/sprints/YYYY-WXX/[feature-name]/`
-- For other projects: `projects/[project-id]/sprints/YYYY-WXX/[feature-name]/`
+**If commitTarget is "project-repo":**
 
+The project has its own git repo. Navigate into it and commit:
 ```bash
-cd [project-path]
+cd [full-path-to-project]
 git pull origin main
 git add sprints/YYYY-WXX/[feature-name]/
+git commit -m "Add [feature-name] sprint YYYY-WXX handoff
+
+- PRD with wireframes
+- [other deliverables]
+
+Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
+git push origin main
+```
+
+**If commitTarget is "product-os":**
+
+Commit to the product-os repo. May need to handle gitignore:
+```bash
+git add -f [path-to-feature-folder]/
 git commit -m "Add [feature-name] sprint YYYY-WXX handoff"
 git push origin main
 ```
 
-Report the commit hash. If there are conflicts, help resolve them first.
+**If commitTarget is "none":**
 
-### Step 4: Draft Slack Message
+Skip git operations. Tell user: "Files are ready locally. You can commit manually when ready."
 
-Ask: "Is this for a shared channel or a private chat with one engineer?"
+Report the commit hash (if applicable). If there are conflicts, help resolve them first.
 
-**For private chat (casual tone):**
+### Step 4: Handoff Target
+
+Ask: "Who is implementing this?"
+
+Options:
+1. **Claude Code** — Generate a prompt for Claude to implement
+2. **Engineer** — Draft a Slack message for handoff
+3. **Myself** — No notification needed
+
+**If Claude Code:**
+
+Generate a concise prompt:
 ```
-hey! [feature-name] spec is ready for this week
+Pull latest from main and read the sprint handoff docs in `sprints/YYYY-WXX/[feature-name]/`.
+
+Read all the files there (prd.md, develop-output.md, problem-statement.md) to understand what we're building.
+
+Then investigate the current codebase to understand what exists today.
+
+Based on the PRD requirements and codebase analysis, create a detailed implementation plan. Break it into phases and identify what to remove, what to modify, and what to create.
+```
+
+**If Engineer:**
+
+Ask: "Is this for a shared channel or a private chat?"
+
+Draft appropriate Slack message (casual tone):
+```
+hey! [feature-name] spec is ready
 
 tldr: [one line description]
 
-files are in [project-path]/sprints/YYYY-WXX/[feature-name]/
-- prd.md has the full spec + wireframes
-- linear-tickets.md has X tickets broken down
-
-loom: [link or "will record and share"]
+files: [repo]/sprints/YYYY-WXX/[feature-name]/
+- prd.md — full spec + wireframes
 
 lmk if anything's unclear
 ```
 
-**For shared channel (slightly more structured but still casual):**
-```
-[feature-name] is ready for YYYY-WXX
+**If Myself:**
 
-what we're building: [one line]
+Skip notification, proceed to handoff record.
 
-files: [project-path]/sprints/YYYY-WXX/[feature-name]/
-- prd.md — full spec + wireframes
-- qa.md — qa checklist
-- linear-tickets.md — X tickets
-
-loom: [link or "coming soon"]
-
-questions? lmk
-```
-
-Print the message so user can copy/paste.
-
-### Step 5: Other Stakeholders
-
-Ask: "Any other stakeholders to notify? (e.g., CEO, QA)"
-
-If yes: Draft a brief, casual message for each.
-
-If no: Proceed.
-
-### Step 6: Create Handoff Record
+### Step 5: Create Handoff Record
 
 **Write to `handoff-complete.md` in the feature folder:**
 ```markdown
@@ -109,23 +123,24 @@ If no: Proceed.
 **Feature:** [Feature Name]
 **Sprint:** YYYY-WXX
 **Date:** [Today's date]
+**Commit Target:** [project-repo/product-os/none]
+
+## Deliverables
+- [x] prd.md
+- [x/skipped] qa.md
+- [x/skipped] linear-tickets.md
+- [x/skipped] loom-outline.md
 
 ## Links
-- **Loom:** [link or "pending"]
-- **Commit:** [hash]
+- **Commit:** [hash or "not committed"]
+- **Loom:** [link or "skipped"]
 
-## Slack Message
-```
-[Copy of the drafted message]
-```
-
-## Other Stakeholder Messages
-[Any additional messages drafted, or "None"]
+## Handoff
+- **Target:** [Claude Code / Engineer / Self]
+- **Prompt/Message:** [included below if applicable]
 
 ## Remaining Manual Steps
-- [ ] Post Slack message
-- [ ] Record Loom video (if pending)
-- [ ] Create Linear tickets from linear-tickets.md
+- [ ] [any remaining steps]
 ```
 
 ### Final Output
@@ -133,11 +148,23 @@ If no: Proceed.
 ```
 Handoff complete!
 
-Commit: [hash]
-Files: [project-path]/sprints/YYYY-WXX/[feature-name]/
+Commit: [hash or "local only"]
+Repo: [repo name]
+Path: sprints/YYYY-WXX/[feature-name]/
 
-Remaining:
-1. Post the Slack message above
-2. Record Loom (if not done)
-3. Create Linear tickets
+[If Claude Code prompt was generated, show it]
+[If Slack message was drafted, show it]
 ```
+
+## Troubleshooting
+
+**Nested repo issues:**
+If you get "paths are ignored by .gitignore" errors when committing to product-os for a project that has its own repo, the project folder is gitignored. Options:
+1. Use `git add -f` to force add
+2. Change commitTarget to "project-repo" and commit there instead
+3. Update .gitignore to allow the sprints subfolder
+
+**No .git in project folder:**
+If commitTarget is "project-repo" but there's no .git folder, ask user to either:
+1. Initialize git in the project folder
+2. Change commitTarget to "product-os" or "none"
