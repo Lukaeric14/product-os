@@ -15,6 +15,14 @@
       "path": "projects/nairon-slackapp",
       "sprintsPath": "projects/nairon-slackapp/sprints",
       "contextFile": "projects/nairon-slackapp/CONTEXT.md"
+    },
+    {
+      "id": "product-os",
+      "name": "Product OS",
+      "description": "Sprint-based product development workflow tool using Double Diamond process",
+      "path": ".",
+      "sprintsPath": "sprints",
+      "contextFile": "projects/product-os/CONTEXT.md"
     }
   ]
 }
