@@ -4,14 +4,14 @@ import { AppLayout } from '@/components/AppLayout'
 import { PhaseNav } from '@/components/PhaseNav'
 import { PhasePanel } from '@/components/PhasePanel'
 import { useFeature } from '@/hooks/useSprints'
-import type { PhaseId } from '@/types/sprint'
-import { getPhase, PHASES } from '@/types/sprint'
+import type { AnyPhaseId } from '@/types/sprint'
+import { getPhaseForMode, getPhasesForMode } from '@/types/sprint'
 
 export function FeatureDetail() {
   const { week, name } = useParams<{ week: string; name: string }>()
   const { feature, loading } = useFeature(week || '', name || '')
 
-  const [selectedPhase, setSelectedPhase] = useState<PhaseId | null>(null)
+  const [selectedPhase, setSelectedPhase] = useState<AnyPhaseId | null>(null)
 
   if (loading) {
     return (
@@ -36,12 +36,14 @@ export function FeatureDetail() {
     )
   }
 
+  const phases = getPhasesForMode(feature.mode)
+
   // Calculate completed phases using hybrid approach:
-  // - Start/Discover: use exit file existence
-  // - Define/Develop: exit file exists OR all steps done
-  // - Deliver: all four output files must exist
-  const isPhaseActuallyComplete = (phaseId: PhaseId): boolean => {
-    const phaseData = getPhase(phaseId)
+  // - Start/Discover/Problem: use exit file existence
+  // - Define/Develop/Solution: exit file exists OR all steps done
+  // - Deliver: all four output files must exist (comprehensive only)
+  const isPhaseActuallyComplete = (phaseId: AnyPhaseId): boolean => {
+    const phaseData = getPhaseForMode(phaseId, feature.mode)
     if (!phaseData) return false
 
     // Check if exit file exists
@@ -49,12 +51,17 @@ export function FeatureDetail() {
       ? !!feature.files[phaseData.exitFile as keyof typeof feature.files]
       : false
 
-    // For Start and Discover, use file-based completion only
-    if (phaseId === 'start' || phaseId === 'discover') {
+    // For Start, use file-based completion only
+    if (phaseId === 'start') {
       return exitFileExists
     }
 
-    // For Deliver, require all four output files
+    // For Discover (comprehensive) or Problem (lite), use file-based completion
+    if (phaseId === 'discover' || phaseId === 'problem') {
+      return exitFileExists
+    }
+
+    // For Deliver (comprehensive only), require all four output files
     if (phaseId === 'deliver') {
       return !!(
         feature.files['prd.md'] &&
@@ -64,20 +71,25 @@ export function FeatureDetail() {
       )
     }
 
+    // For Solution (lite), require prd.md
+    if (phaseId === 'solution') {
+      return !!feature.files['prd.md']
+    }
+
     // For Define/Develop: complete if exit file exists OR all steps are done
     const stepsComplete = feature.completedSteps[phaseId] || []
     const allStepsDone = phaseData.steps.every(step => stepsComplete.includes(step.number))
     return exitFileExists || allStepsDone
   }
 
-  const actualCompletedPhases: PhaseId[] = PHASES
-    .filter(phase => isPhaseActuallyComplete(phase.id))
-    .map(p => p.id)
+  const actualCompletedPhases: AnyPhaseId[] = phases
+    .filter(phase => isPhaseActuallyComplete(phase.id as AnyPhaseId))
+    .map(p => p.id as AnyPhaseId)
 
   // Current phase is the first phase that isn't complete
-  const actualCurrentPhase: PhaseId = PHASES.find(phase =>
-    !actualCompletedPhases.includes(phase.id)
-  )?.id || 'handoff'
+  const actualCurrentPhase: AnyPhaseId = (phases.find(phase =>
+    !actualCompletedPhases.includes(phase.id as AnyPhaseId)
+  )?.id || 'handoff') as AnyPhaseId
 
   const displayPhase = selectedPhase || actualCurrentPhase
 
@@ -90,6 +102,9 @@ export function FeatureDetail() {
         <div>
           <div className="text-sm text-stone-500 dark:text-stone-400 mb-1">
             {feature.sprintWeek}
+            {feature.mode === 'lite' && (
+              <span className="ml-2 font-medium">[Lite]</span>
+            )}
           </div>
           <h1 className="text-3xl font-bold text-stone-900 dark:text-stone-100">
             {feature.name}
@@ -102,6 +117,7 @@ export function FeatureDetail() {
             currentPhase={actualCurrentPhase}
             viewingPhase={displayPhase}
             onPhaseClick={setSelectedPhase}
+            mode={feature.mode}
           />
         </div>
 
@@ -110,6 +126,7 @@ export function FeatureDetail() {
           isComplete={isPhaseComplete}
           files={feature.files}
           completedSteps={feature.completedSteps}
+          mode={feature.mode}
         />
 
         <div className="pt-6 border-t border-stone-200 dark:border-stone-800">

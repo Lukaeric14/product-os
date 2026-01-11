@@ -10,15 +10,25 @@ You are helping finalize and hand off the feature to engineers.
 ## Prerequisites
 
 1. Read `project.json` from the current feature folder to identify:
-   - Which project this is for
-   - Where to commit files (`commitTarget`)
+   - `mode` — comprehensive or lite (defaults to comprehensive if missing)
+   - `projectId` — which project this is for
+   - `commitTarget` — where to commit files
 2. Read the project's CONTEXT.md file from `projects/[project-id]/CONTEXT.md` for project-specific context.
 
 ## Your Task
 
 ### Step 1: Validate Deliverables
 
-Check which files exist in the feature folder:
+Check the `mode` from project.json, then validate the required files.
+
+**If lite mode:**
+- prd.md (required)
+- problem-output.md (should exist)
+- solution-output.md (should exist)
+
+If prd.md is missing, tell user to run `/solution` first.
+
+**If comprehensive mode:**
 - prd.md (required)
 - qa.md (optional)
 - linear-tickets.md (optional)
@@ -26,12 +36,15 @@ Check which files exist in the feature folder:
 
 **PRD is required.** If missing, tell user to run `/deliver` first.
 
-For other files, if missing ask: "I see [file] is missing. Was this skipped intentionally?"
+For optional files (comprehensive only), if missing ask: "I see [file] is missing. Was this skipped intentionally?"
 - If yes: Create a placeholder file with "**Status:** Skipped" and continue
 - If no: Tell user to run `/deliver` to generate it
 
 ### Step 2: Confirm Loom
 
+**Skip this step for lite mode** — lite features don't require Loom videos.
+
+**For comprehensive mode:**
 Ask: "Have you recorded the Loom video? (or 'skip')"
 
 If skip: Note as skipped, continue.
@@ -72,6 +85,24 @@ Skip git operations. Tell user: "Files are ready locally. You can commit manuall
 Report the commit hash (if applicable). If there are conflicts, help resolve them first.
 
 ### Step 4: Handoff Target
+
+**If lite mode, default to Claude Code:**
+
+For lite features, we assume implementation will be done with Claude Code. Generate the prompt directly:
+
+```
+Pull latest from main and read the sprint handoff docs in `sprints/YYYY-WXX/[feature-name]/`.
+
+Read all the files there (prd.md, solution-output.md, problem-output.md) to understand what we're building.
+
+Then investigate the current codebase to understand what exists today.
+
+Based on the PRD requirements and codebase analysis, create a detailed implementation plan. Break it into phases and identify what to remove, what to modify, and what to create.
+```
+
+Ask: "Would you like to hand off to someone else instead?" If yes, continue with the options below. If no, skip to Step 5.
+
+**If comprehensive mode:**
 
 Ask: "Who is implementing this?"
 

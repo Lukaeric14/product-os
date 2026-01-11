@@ -1,31 +1,21 @@
 import { CheckIcon, ClipboardIcon, ArrowRightIcon } from 'lucide-react'
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
-import type { PhaseId, FeatureFiles } from '@/types/sprint'
-import { getPhase, getNextPhase } from '@/types/sprint'
+import type { AnyPhaseId, FeatureFiles, FeatureMode } from '@/types/sprint'
+import { getPhaseForMode, getNextPhaseForMode } from '@/types/sprint'
 
 interface PhasePanelProps {
-  phaseId: PhaseId
+  phaseId: AnyPhaseId
   isComplete: boolean
   files?: FeatureFiles
   completedSteps?: Record<string, number[]>
+  mode?: FeatureMode
 }
 
-// Find the highest completed step number based on file deliverables
-function getHighestFileStep(steps: { number: number; deliverable: string }[], files: FeatureFiles): number {
-  let highest = 0
-  for (const step of steps) {
-    if (step.deliverable.endsWith('.md') && files[step.deliverable as keyof FeatureFiles]) {
-      highest = Math.max(highest, step.number)
-    }
-  }
-  return highest
-}
-
-export function PhasePanel({ phaseId, isComplete, files = {}, completedSteps = {} }: PhasePanelProps) {
+export function PhasePanel({ phaseId, isComplete, files = {}, completedSteps = {}, mode = 'comprehensive' }: PhasePanelProps) {
   const [copied, setCopied] = useState(false)
-  const phase = getPhase(phaseId)
-  const nextPhase = getNextPhase(phaseId)
+  const phase = getPhaseForMode(phaseId, mode)
+  const nextPhase = getNextPhaseForMode(phaseId, mode)
 
   if (!phase) return null
 
@@ -38,18 +28,27 @@ export function PhasePanel({ phaseId, isComplete, files = {}, completedSteps = {
   // Get completed steps for this phase from content markers
   const phaseCompletedSteps = completedSteps[phaseId] || []
 
-  // Find highest step with a completed file deliverable (workflow is sequential)
-  const highestFileStep = getHighestFileStep(phase.steps, files)
+  // Phases that use content markers (single output file with sections matching step names)
+  // For these, completion is determined by backend scanning for section headings with real content
+  // Note: 'deliver' is excluded because it produces individual files (prd.md, qa.md, etc.) not sections
+  const contentMarkerPhases = mode === 'lite'
+    ? ['problem', 'solution']
+    : ['discover', 'define', 'develop']
 
   // A step is complete if:
-  // 1. It's in the completedSteps array from content markers, OR
-  // 2. It's at or before the highest file-based completed step (sequential workflow)
+  // 1. For content marker phases: it's in the completedSteps array from backend
+  // 2. For file-based phases (start, handoff): its individual file deliverable exists
   const isStepComplete = (stepNumber: number) => {
-    // Check content markers
-    if (phaseCompletedSteps.includes(stepNumber)) return true
+    // For phases with content markers, ONLY use the backend detection
+    if (contentMarkerPhases.includes(phaseId)) {
+      return phaseCompletedSteps.includes(stepNumber)
+    }
 
-    // If any later step has a file, this step must be done (sequential workflow)
-    if (stepNumber <= highestFileStep) return true
+    // For start/handoff phases, check if each step's individual file exists
+    const step = phase.steps.find(s => s.number === stepNumber)
+    if (step && step.deliverable.endsWith('.md') && files[step.deliverable as keyof FeatureFiles]) {
+      return true
+    }
 
     return false
   }

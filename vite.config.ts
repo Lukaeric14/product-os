@@ -16,7 +16,10 @@ interface ProjectConfig {
   contextFile: string
 }
 
-// Step markers to look for in each phase's output file
+// Feature mode type
+type FeatureMode = 'comprehensive' | 'lite'
+
+// Step markers to look for in each phase's output file (comprehensive mode)
 const PHASE_STEP_MARKERS: Record<string, { file: string; markers: string[] }> = {
   discover: {
     file: 'discover-output.md',
@@ -36,11 +39,24 @@ const PHASE_STEP_MARKERS: Record<string, { file: string; markers: string[] }> = 
   }
 }
 
-// Check which steps are completed by looking for markers in file content
-function getCompletedSteps(featureDir: string): Record<string, number[]> {
-  const completedSteps: Record<string, number[]> = {}
+// Step markers for lite mode phases
+const LITE_PHASE_STEP_MARKERS: Record<string, { file: string; markers: string[] }> = {
+  problem: {
+    file: 'problem-output.md',
+    markers: ['Core Desire', 'Reasoning Chain', 'Blind Spots', 'Risks', 'Problem Statement']
+  },
+  solution: {
+    file: 'solution-output.md',
+    markers: ['Solution Approach', 'UI Flow', 'Desktop Wireframe', 'Mobile Wireframe', 'Edge Cases', 'Trade-offs', 'Generate PRD']
+  }
+}
 
-  for (const [phase, config] of Object.entries(PHASE_STEP_MARKERS)) {
+// Check which steps are completed by looking for markers in file content
+function getCompletedSteps(featureDir: string, mode: FeatureMode = 'comprehensive'): Record<string, number[]> {
+  const completedSteps: Record<string, number[]> = {}
+  const markers = mode === 'lite' ? LITE_PHASE_STEP_MARKERS : PHASE_STEP_MARKERS
+
+  for (const [phase, config] of Object.entries(markers)) {
     const filePath = path.join(featureDir, config.file)
     if (fs.existsSync(filePath)) {
       const content = fs.readFileSync(filePath, 'utf-8')
@@ -89,8 +105,8 @@ function getCompletedSteps(featureDir: string): Record<string, number[]> {
   return completedSteps
 }
 
-// Read project.json from feature folder to get project info
-function getFeatureProject(featureDir: string): { projectId: string; projectName: string } | null {
+// Read project.json from feature folder to get project info and mode
+function getFeatureProject(featureDir: string): { projectId: string; projectName: string; mode: FeatureMode } | null {
   const projectJsonPath = path.join(featureDir, 'project.json')
   if (fs.existsSync(projectJsonPath)) {
     try {
@@ -98,7 +114,8 @@ function getFeatureProject(featureDir: string): { projectId: string; projectName
       const data = JSON.parse(content)
       return {
         projectId: data.projectId || 'unknown',
-        projectName: data.projectName || 'Unknown'
+        projectName: data.projectName || 'Unknown',
+        mode: data.mode || 'comprehensive' // Default to comprehensive for backward compat
       }
     } catch {
       return null
@@ -133,6 +150,7 @@ interface FeatureData {
   sprintWeek: string
   projectId: string
   projectName: string
+  mode: FeatureMode
   files: Record<string, boolean>
   completedSteps: Record<string, number[]>
 }
@@ -178,11 +196,12 @@ function sprintApiPlugin() {
               const fileMap: Record<string, boolean> = {}
               files.forEach(f => fileMap[f] = true)
 
-              // Get completed steps from file content
-              const completedSteps = getCompletedSteps(featureDir)
-
-              // Get project info from project.json in feature folder
+              // Get project info and mode from project.json in feature folder
               const featureProject = getFeatureProject(featureDir)
+              const mode: FeatureMode = featureProject?.mode || 'comprehensive'
+
+              // Get completed steps from file content (mode-aware)
+              const completedSteps = getCompletedSteps(featureDir, mode)
 
               return {
                 id: `${project.id}/${week}/${name}`,
@@ -190,6 +209,7 @@ function sprintApiPlugin() {
                 sprintWeek: week,
                 projectId: featureProject?.projectId || project.id,
                 projectName: featureProject?.projectName || project.name,
+                mode,
                 files: fileMap,
                 completedSteps,
               }

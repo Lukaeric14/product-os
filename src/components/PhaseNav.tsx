@@ -1,21 +1,24 @@
 import { CheckIcon, ArrowRightIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import type { PhaseId } from '@/types/sprint'
-import { PHASES, getPhaseStatus } from '@/types/sprint'
+import type { AnyPhaseId, FeatureMode } from '@/types/sprint'
+import { getPhasesForMode, getPhaseStatusForMode } from '@/types/sprint'
 
 interface PhaseNavProps {
-  completedPhases: PhaseId[]
-  currentPhase: PhaseId
-  viewingPhase?: PhaseId
-  onPhaseClick?: (phaseId: PhaseId) => void
+  completedPhases: AnyPhaseId[]
+  currentPhase: AnyPhaseId
+  viewingPhase?: AnyPhaseId
+  onPhaseClick?: (phaseId: AnyPhaseId) => void
+  mode?: FeatureMode
 }
 
-export function PhaseNav({ completedPhases, currentPhase, viewingPhase, onPhaseClick }: PhaseNavProps) {
+export function PhaseNav({ completedPhases, currentPhase, viewingPhase, onPhaseClick, mode = 'comprehensive' }: PhaseNavProps) {
+  const phases = getPhasesForMode(mode)
+
   return (
     <nav className="flex items-center justify-center gap-1 sm:gap-2">
-      {PHASES.map((phase, index) => {
-        const status = getPhaseStatus(phase.id, completedPhases, currentPhase)
-        const isLast = index === PHASES.length - 1
+      {phases.map((phase, index) => {
+        const status = getPhaseStatusForMode(phase.id as AnyPhaseId, completedPhases, currentPhase)
+        const isLast = index === phases.length - 1
         const isViewing = viewingPhase === phase.id
 
         return (

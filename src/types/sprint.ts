@@ -4,11 +4,14 @@
  */
 
 export type PhaseId = 'start' | 'discover' | 'define' | 'develop' | 'deliver' | 'handoff'
+export type LitePhaseId = 'start' | 'problem' | 'solution' | 'handoff'
+export type AnyPhaseId = PhaseId | LitePhaseId
+export type FeatureMode = 'comprehensive' | 'lite'
 
 export type PhaseStatus = 'completed' | 'current' | 'upcoming'
 
 export interface Phase {
-  id: PhaseId
+  id: AnyPhaseId
   name: string
   description: string
   command: string
@@ -36,8 +39,9 @@ export interface Feature {
   id: string
   name: string
   type: 'new' | 'improvement'
-  currentPhase: PhaseId
-  completedPhases: PhaseId[]
+  mode: FeatureMode
+  currentPhase: AnyPhaseId
+  completedPhases: AnyPhaseId[]
   completedSteps: Record<string, number[]> // e.g., { discover: [1, 2, 3] }
   files: FeatureFiles
   sprintWeek: string // e.g., "2025-W02"
@@ -59,6 +63,9 @@ export interface FeatureFiles {
   'linear-tickets.md'?: boolean
   'loom-outline.md'?: boolean
   'handoff-complete.md'?: boolean
+  // Lite mode files
+  'problem-output.md'?: boolean
+  'solution-output.md'?: boolean
 }
 
 export interface Sprint {
@@ -164,20 +171,105 @@ export const PHASES: Phase[] = [
   },
 ]
 
-// Helper to get phase by ID
+// Lite mode phase definitions (4 phases instead of 6)
+export const LITE_PHASES: Phase[] = [
+  {
+    id: 'start',
+    name: 'Start',
+    description: 'Initialize feature and capture quick summary',
+    command: '/start',
+    exitFile: 'inputs-summary.md',
+    steps: [
+      { number: 1, title: 'Select Project', description: 'Choose which project this is for', deliverable: 'project.json' },
+      { number: 2, title: 'Select Mode', description: 'Comprehensive or Lite?', deliverable: 'Mode stored' },
+      { number: 3, title: 'Feature Name', description: 'Create feature directory', deliverable: 'Directory created' },
+      { number: 4, title: 'Quick Summary', description: 'Describe the feature briefly', deliverable: 'inputs-summary.md' },
+    ],
+  },
+  {
+    id: 'problem',
+    name: 'Problem',
+    description: 'Define the problem (discover + define combined)',
+    command: '/problem',
+    exitFile: 'problem-output.md',
+    steps: [
+      { number: 1, title: 'Core Desire', description: 'Why are we doing this?', deliverable: 'Documented' },
+      { number: 2, title: 'Reasoning Chain', description: 'Does the logic hold?', deliverable: 'Documented' },
+      { number: 3, title: 'Blind Spots', description: 'What are we missing?', deliverable: 'Documented' },
+      { number: 4, title: 'Risks', description: 'What could go wrong?', deliverable: 'Documented' },
+      { number: 5, title: 'Problem Statement', description: 'One-sentence problem', deliverable: 'problem-output.md' },
+    ],
+  },
+  {
+    id: 'solution',
+    name: 'Solution',
+    description: 'Design the solution and generate PRD',
+    command: '/solution',
+    exitFile: 'prd.md',
+    steps: [
+      { number: 1, title: 'Solution Approach', description: 'How will we solve it?', deliverable: 'solution-output.md' },
+      { number: 2, title: 'UI Flow Options', description: 'Brainstorm approaches', deliverable: 'Documented' },
+      { number: 3, title: 'Desktop Wireframe', description: 'ASCII wireframe', deliverable: 'ASCII wireframe' },
+      { number: 4, title: 'Mobile Wireframe', description: 'ASCII wireframe', deliverable: 'ASCII wireframe' },
+      { number: 5, title: 'Edge Cases', description: 'Surface all "what ifs"', deliverable: 'Edge cases list' },
+      { number: 6, title: 'Trade-offs', description: 'Evaluate options', deliverable: 'Trade-off analysis' },
+      { number: 7, title: 'Generate PRD', description: 'Create PRD', deliverable: 'prd.md' },
+    ],
+  },
+  {
+    id: 'handoff',
+    name: 'Handoff',
+    description: 'Validate, commit, and generate implementation prompt',
+    command: '/handoff',
+    exitFile: 'handoff-complete.md',
+    steps: [
+      { number: 1, title: 'Validate PRD', description: 'Check file exists', deliverable: 'Validated' },
+      { number: 2, title: 'Commit & Push', description: 'Git operations', deliverable: 'Pushed' },
+      { number: 3, title: 'Claude Code Prompt', description: 'Generate implementation prompt', deliverable: 'handoff-complete.md' },
+    ],
+  },
+]
+
+// Helper to get phases for a given mode
+export function getPhasesForMode(mode: FeatureMode): Phase[] {
+  return mode === 'lite' ? LITE_PHASES : PHASES
+}
+
+// Helper to get phase by ID (comprehensive mode)
 export function getPhase(id: PhaseId): Phase | undefined {
   return PHASES.find(p => p.id === id)
 }
 
-// Helper to get next phase
+// Helper to get phase by ID for any mode
+export function getPhaseForMode(id: AnyPhaseId, mode: FeatureMode): Phase | undefined {
+  const phases = getPhasesForMode(mode)
+  return phases.find(p => p.id === id)
+}
+
+// Helper to get next phase (comprehensive mode)
 export function getNextPhase(currentId: PhaseId): Phase | undefined {
   const currentIndex = PHASES.findIndex(p => p.id === currentId)
   if (currentIndex === -1 || currentIndex === PHASES.length - 1) return undefined
   return PHASES[currentIndex + 1]
 }
 
+// Helper to get next phase for any mode
+export function getNextPhaseForMode(currentId: AnyPhaseId, mode: FeatureMode): Phase | undefined {
+  const phases = getPhasesForMode(mode)
+  const currentIndex = phases.findIndex(p => p.id === currentId)
+  if (currentIndex === -1 || currentIndex === phases.length - 1) return undefined
+  return phases[currentIndex + 1]
+}
+
 // Helper to determine phase status
 export function getPhaseStatus(phaseId: PhaseId, completedPhases: PhaseId[], currentPhase: PhaseId): PhaseStatus {
+  if (completedPhases.includes(phaseId)) return 'completed'
+  if (phaseId === currentPhase) return 'current'
+  return 'upcoming'
+}
+
+// Helper to determine phase status for any mode
+export function getPhaseStatusForMode(phaseId: AnyPhaseId, completedPhases: AnyPhaseId[], currentPhase: AnyPhaseId): PhaseStatus {
   if (completedPhases.includes(phaseId)) return 'completed'
   if (phaseId === currentPhase) return 'current'
   return 'upcoming'

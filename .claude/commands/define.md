@@ -9,7 +9,10 @@ You are helping converge on ONE clear problem statement.
 
 ## Prerequisites
 
-1. Read `project.json` from the current feature folder to identify which project this is for.
+1. Read `project.json` from the current feature folder:
+   - Check the `mode` field
+   - If `mode` is "lite", tell user: **"This is a lite feature. Use `/problem` instead."** and stop.
+   - If `mode` is missing or "comprehensive", continue.
 2. Read the project's CONTEXT.md file from `projects/[project-id]/CONTEXT.md`.
 3. Read `discover-output.md` to understand what was explored.
 

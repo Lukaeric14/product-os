@@ -9,7 +9,10 @@ You are helping explore solutions for the defined problem. This is DIVERGE - exp
 
 ## Prerequisites
 
-1. Read `project.json` from the current feature folder to identify which project this is for.
+1. Read `project.json` from the current feature folder:
+   - Check the `mode` field
+   - If `mode` is "lite", tell user: **"This is a lite feature. Use `/solution` instead."** and stop.
+   - If `mode` is missing or "comprehensive", continue.
 2. Read the project's CONTEXT.md file from `projects/[project-id]/CONTEXT.md` for project-specific guidelines.
 3. Read `problem-statement.md` to understand what we're solving.
 4. Read the project's codebase for relevant context (path specified in CONTEXT.md).

@@ -21,7 +21,21 @@ Present the options dynamically from projects.json.
 
 Store the selected project ID for later steps.
 
-### Step 2: Create Directory
+### Step 2: Select Mode
+
+Ask: "Is this a comprehensive or lite feature?"
+
+Options:
+1. **Comprehensive** — Full 6-phase Double Diamond process (discover, define, develop, deliver)
+2. **Lite** — Quick 4-phase workflow for smaller features (problem, solution, handoff)
+
+Explain briefly:
+- Comprehensive: Best for complex, multi-stakeholder features that need thorough exploration
+- Lite: Best for small, well-understood features where you already know the problem
+
+Store the mode for `project.json` (`"mode": "comprehensive"` or `"mode": "lite"`).
+
+### Step 3: Create Directory
 
 Ask: "What's the name of this feature? (e.g., credits-billing, epic-dashboard)"
 
@@ -29,9 +43,9 @@ Then create the directory structure. Read the project config from `projects/proj
 
 Use the current week number (YYYY-WXX format).
 
-Create a `project.json` file in the feature folder (see Step 3 for full schema).
+Create a `project.json` file in the feature folder (see Step 4 for full schema).
 
-### Step 3: Git Commit Target
+### Step 4: Git Commit Target
 
 Ask: "Where should handoff files be committed at the end?"
 
@@ -48,6 +62,7 @@ Store the answer in `project.json`:
   "featureName": "[feature-name]",
   "sprintWeek": "YYYY-WXX",
   "createdAt": "[ISO date]",
+  "mode": "comprehensive" | "lite",
   "commitTarget": "project-repo" | "product-os" | "none"
 }
 ```
@@ -58,19 +73,55 @@ ls -la [project-path]/.git
 ```
 If no .git exists, warn the user and ask them to choose another option.
 
-### Step 4: Feature Type
+---
+
+## If Lite Mode
+
+For lite features, skip the detailed input gathering. Instead:
+
+### Step 5 (Lite): Quick Summary
+
+Ask: "Briefly describe the feature — what's the problem and what do you want to build?"
+
+Save the summary directly to `inputs-summary.md`:
+```markdown
+# Inputs Summary
+
+**Project:** [Project Name]
+**Feature:** [Feature Name]
+**Mode:** Lite
+**Sprint:** YYYY-WXX
+
+## Feature Summary
+[User's description]
+
+## Notes
+- Commit Target: [target]
+```
+
+Confirm: "Inputs captured. Ready to run `/problem`?"
+
+**Skip to end — do not continue with comprehensive steps.**
+
+---
+
+## If Comprehensive Mode
+
+Continue with detailed input gathering:
+
+### Step 5: Feature Type
 
 Ask: "Is this a new feature or improvement to existing?"
 
 Document the answer.
 
-### Step 5: Import Transcript
+### Step 6: Import Transcript
 
 Ask: "Do you have a transcript from the stakeholder call? Paste it here. (or 'skip')"
 
 Save to `raw-input-transcript.md` if provided.
 
-### Step 6: Import Slack Threads
+### Step 7: Import Slack Threads
 
 Ask: "Any Slack threads related to this feature? Paste them here. (or 'skip')"
 
@@ -78,19 +129,19 @@ If user pastes a screenshot, read it and transcribe the content.
 
 Save to `raw-input-slack.md` if provided.
 
-### Step 7: Import Customer Feedback
+### Step 8: Import Customer Feedback
 
 Ask: "Any customer feedback driving this? Paste it here. (or 'skip')"
 
 Save to `raw-input-feedback.md` if provided.
 
-### Step 8: Capture Design Links
+### Step 9: Capture Design Links
 
 Ask: "Any existing Figma links or design references? (or 'skip')"
 
 Note these for later.
 
-### Step 9: Summarize Inputs
+### Step 10: Summarize Inputs
 
 Summarize everything captured:
 - Project and feature name

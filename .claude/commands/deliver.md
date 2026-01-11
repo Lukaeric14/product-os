@@ -9,7 +9,10 @@ You are helping finalize and generate all handoff materials.
 
 ## Prerequisites
 
-1. Read `project.json` from the current feature folder to identify which project this is for.
+1. Read `project.json` from the current feature folder:
+   - Check the `mode` field
+   - If `mode` is "lite", tell user: **"This is a lite feature. Use `/solution` instead."** and stop.
+   - If `mode` is missing or "comprehensive", continue.
 2. Read the project's CONTEXT.md file from `projects/[project-id]/CONTEXT.md`.
 3. `problem-statement.md` exists
 4. `develop-output.md` exists (includes ASCII wireframes)

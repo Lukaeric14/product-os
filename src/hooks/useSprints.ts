@@ -1,10 +1,21 @@
 import { useState, useEffect } from 'react'
-import type { Sprint, PhaseId, FeatureFiles, Project } from '@/types/sprint'
+import type { Sprint, PhaseId, FeatureFiles, Project, FeatureMode, AnyPhaseId, LitePhaseId } from '@/types/sprint'
 
 const POLL_INTERVAL = 2000 // 2 seconds
 
 // Determine current phase based on which files exist
-function determineCurrentPhase(files: FeatureFiles): PhaseId {
+function determineCurrentPhase(files: FeatureFiles, mode: FeatureMode = 'comprehensive'): AnyPhaseId {
+  if (mode === 'lite') {
+    // Lite mode: start → problem → solution → handoff
+    if (files['handoff-complete.md']) return 'handoff'
+    if (files['prd.md']) return 'handoff'
+    if (files['solution-output.md']) return 'solution'
+    if (files['problem-output.md']) return 'solution'
+    if (files['inputs-summary.md']) return 'problem'
+    return 'start'
+  }
+
+  // Comprehensive mode: start → discover → define → develop → deliver → handoff
   if (files['handoff-complete.md']) return 'handoff'
   if (files['prd.md'] && files['qa.md'] && files['linear-tickets.md'] && files['loom-outline.md']) {
     return 'handoff'
@@ -18,7 +29,18 @@ function determineCurrentPhase(files: FeatureFiles): PhaseId {
 }
 
 // Determine completed phases based on files
-function determineCompletedPhases(files: FeatureFiles): PhaseId[] {
+function determineCompletedPhases(files: FeatureFiles, mode: FeatureMode = 'comprehensive'): AnyPhaseId[] {
+  if (mode === 'lite') {
+    // Lite mode phases
+    const completed: LitePhaseId[] = []
+    if (files['inputs-summary.md']) completed.push('start')
+    if (files['problem-output.md']) completed.push('problem')
+    if (files['prd.md']) completed.push('solution')
+    if (files['handoff-complete.md']) completed.push('handoff')
+    return completed
+  }
+
+  // Comprehensive mode phases
   const completed: PhaseId[] = []
   if (files['inputs-summary.md']) completed.push('start')
   if (files['discover-output.md']) completed.push('discover')
@@ -38,6 +60,7 @@ interface ApiFeature {
   sprintWeek: string
   projectId?: string
   projectName?: string
+  mode?: FeatureMode
   files: FeatureFiles
   completedSteps?: Record<string, number[]>
 }
@@ -51,18 +74,22 @@ interface ApiSprint {
 function transformSprints(data: ApiSprint[]): Sprint[] {
   return data.map(sprint => ({
     week: sprint.week,
-    features: sprint.features.map((f: ApiFeature) => ({
-      id: f.id,
-      name: f.name,
-      type: 'new' as const,
-      sprintWeek: f.sprintWeek,
-      projectId: f.projectId || 'unknown',
-      projectName: f.projectName || 'Unknown',
-      files: f.files,
-      currentPhase: determineCurrentPhase(f.files),
-      completedPhases: determineCompletedPhases(f.files),
-      completedSteps: f.completedSteps || {},
-    })),
+    features: sprint.features.map((f: ApiFeature) => {
+      const mode: FeatureMode = f.mode || 'comprehensive'
+      return {
+        id: f.id,
+        name: f.name,
+        type: 'new' as const,
+        mode,
+        sprintWeek: f.sprintWeek,
+        projectId: f.projectId || 'unknown',
+        projectName: f.projectName || 'Unknown',
+        files: f.files,
+        currentPhase: determineCurrentPhase(f.files, mode),
+        completedPhases: determineCompletedPhases(f.files, mode),
+        completedSteps: f.completedSteps || {},
+      }
+    }),
   }))
 }
 
