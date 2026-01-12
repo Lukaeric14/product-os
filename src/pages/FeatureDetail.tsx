@@ -38,27 +38,28 @@ export function FeatureDetail() {
 
   const phases = getPhasesForMode(feature.mode)
 
-  // Calculate completed phases using hybrid approach:
-  // - Start/Discover/Problem: use exit file existence
-  // - Define/Develop/Solution: exit file exists OR all steps done
-  // - Deliver: all four output files must exist (comprehensive only)
+  // Calculate completed phases - phases are complete when ALL steps are done
+  // Content-marker phases (discover, define, develop, problem, solution) require all steps
+  // File-based phases (start, deliver, handoff) check for specific files
   const isPhaseActuallyComplete = (phaseId: AnyPhaseId): boolean => {
     const phaseData = getPhaseForMode(phaseId, feature.mode)
     if (!phaseData) return false
 
-    // Check if exit file exists
-    const exitFileExists = phaseData.exitFile
-      ? !!feature.files[phaseData.exitFile as keyof typeof feature.files]
-      : false
+    // Helper to check if all steps are completed
+    const allStepsComplete = (): boolean => {
+      const stepsComplete = feature.completedSteps[phaseId] || []
+      return phaseData.steps.every(step => stepsComplete.includes(step.number))
+    }
 
-    // For Start, use file-based completion only
+    // For Start, use exit file existence (file-based deliverables)
     if (phaseId === 'start') {
+      const exitFileExists = !!feature.files[phaseData.exitFile as keyof typeof feature.files]
       return exitFileExists
     }
 
-    // For Discover (comprehensive) or Problem (lite), use file-based completion
-    if (phaseId === 'discover' || phaseId === 'problem') {
-      return exitFileExists
+    // For Handoff, use exit file existence
+    if (phaseId === 'handoff') {
+      return !!feature.files['handoff-complete.md']
     }
 
     // For Deliver (comprehensive only), require all four output files
@@ -71,15 +72,14 @@ export function FeatureDetail() {
       )
     }
 
-    // For Solution (lite), require prd.md
-    if (phaseId === 'solution') {
-      return !!feature.files['prd.md']
+    // For content-marker phases (discover, define, develop, problem, solution),
+    // require ALL steps to be completed
+    if (['discover', 'define', 'develop', 'problem', 'solution'].includes(phaseId)) {
+      return allStepsComplete()
     }
 
-    // For Define/Develop: complete if exit file exists OR all steps are done
-    const stepsComplete = feature.completedSteps[phaseId] || []
-    const allStepsDone = phaseData.steps.every(step => stepsComplete.includes(step.number))
-    return exitFileExists || allStepsDone
+    // Fallback: check all steps
+    return allStepsComplete()
   }
 
   const actualCompletedPhases: AnyPhaseId[] = phases

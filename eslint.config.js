@@ -6,7 +6,7 @@ import tseslint from 'typescript-eslint'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
-  globalIgnores(['dist', 'keylead', 'projects/nairon-slackapp']),
+  globalIgnores(['dist', 'projects/**']),
   {
     files: ['**/*.{ts,tsx}'],
     extends: [

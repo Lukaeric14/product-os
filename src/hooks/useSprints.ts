@@ -28,14 +28,28 @@ function determineCurrentPhase(files: FeatureFiles, mode: FeatureMode = 'compreh
   return 'start'
 }
 
-// Determine completed phases based on files
-function determineCompletedPhases(files: FeatureFiles, mode: FeatureMode = 'comprehensive'): AnyPhaseId[] {
+// Determine completed phases based on files and completedSteps
+// Content-marker phases require all steps to be documented
+// File-based phases just check for file existence
+function determineCompletedPhases(
+  files: FeatureFiles,
+  mode: FeatureMode = 'comprehensive',
+  completedSteps: Record<string, number[]> = {}
+): AnyPhaseId[] {
   if (mode === 'lite') {
     // Lite mode phases
     const completed: LitePhaseId[] = []
     if (files['inputs-summary.md']) completed.push('start')
-    if (files['problem-output.md']) completed.push('problem')
-    if (files['prd.md']) completed.push('solution')
+    // Problem phase: requires all 5 steps (Core Desire, Reasoning Chain, Blind Spots, Risks, Problem Statement)
+    const problemSteps = completedSteps['problem'] || []
+    if (problemSteps.length >= 5 && [1, 2, 3, 4, 5].every(n => problemSteps.includes(n))) {
+      completed.push('problem')
+    }
+    // Solution phase: requires all 7 steps
+    const solutionSteps = completedSteps['solution'] || []
+    if (solutionSteps.length >= 7 && [1, 2, 3, 4, 5, 6, 7].every(n => solutionSteps.includes(n))) {
+      completed.push('solution')
+    }
     if (files['handoff-complete.md']) completed.push('handoff')
     return completed
   }
@@ -43,9 +57,22 @@ function determineCompletedPhases(files: FeatureFiles, mode: FeatureMode = 'comp
   // Comprehensive mode phases
   const completed: PhaseId[] = []
   if (files['inputs-summary.md']) completed.push('start')
-  if (files['discover-output.md']) completed.push('discover')
-  if (files['problem-statement.md']) completed.push('define')
-  if (files['develop-output.md']) completed.push('develop')
+  // Discover phase: requires all 6 steps
+  const discoverSteps = completedSteps['discover'] || []
+  if (discoverSteps.length >= 6 && [1, 2, 3, 4, 5, 6].every(n => discoverSteps.includes(n))) {
+    completed.push('discover')
+  }
+  // Define phase: requires all 5 steps
+  const defineSteps = completedSteps['define'] || []
+  if (defineSteps.length >= 5 && [1, 2, 3, 4, 5].every(n => defineSteps.includes(n))) {
+    completed.push('define')
+  }
+  // Develop phase: requires all 8 steps
+  const developSteps = completedSteps['develop'] || []
+  if (developSteps.length >= 8 && [1, 2, 3, 4, 5, 6, 7, 8].every(n => developSteps.includes(n))) {
+    completed.push('develop')
+  }
+  // Deliver phase: requires all 4 output files
   if (files['prd.md'] && files['qa.md'] && files['linear-tickets.md'] && files['loom-outline.md']) {
     completed.push('deliver')
   }
@@ -76,6 +103,7 @@ function transformSprints(data: ApiSprint[]): Sprint[] {
     week: sprint.week,
     features: sprint.features.map((f: ApiFeature) => {
       const mode: FeatureMode = f.mode || 'comprehensive'
+      const completedSteps = f.completedSteps || {}
       return {
         id: f.id,
         name: f.name,
@@ -86,8 +114,8 @@ function transformSprints(data: ApiSprint[]): Sprint[] {
         projectName: f.projectName || 'Unknown',
         files: f.files,
         currentPhase: determineCurrentPhase(f.files, mode),
-        completedPhases: determineCompletedPhases(f.files, mode),
-        completedSteps: f.completedSteps || {},
+        completedPhases: determineCompletedPhases(f.files, mode, completedSteps),
+        completedSteps,
       }
     }),
   }))
