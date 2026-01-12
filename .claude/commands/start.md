@@ -45,16 +45,9 @@ Use the current week number (YYYY-WXX format).
 
 Create a `project.json` file in the feature folder (see Step 4 for full schema).
 
-### Step 4: Git Commit Target
+### Step 4: Create project.json
 
-Ask: "Where should handoff files be committed at the end?"
-
-Options:
-1. **Project repo** — Commit to the project's own git repo (e.g., nairon-slackapp has its own .git)
-2. **Product OS repo** — Commit to the product-os repo
-3. **Don't commit** — Keep files local, manual commit later
-
-Store the answer in `project.json`:
+Create the `project.json` file in the feature folder:
 ```json
 {
   "projectId": "[selected-project-id]",
@@ -62,16 +55,11 @@ Store the answer in `project.json`:
   "featureName": "[feature-name]",
   "sprintWeek": "YYYY-WXX",
   "createdAt": "[ISO date]",
-  "mode": "comprehensive" | "lite",
-  "commitTarget": "project-repo" | "product-os" | "none"
+  "mode": "comprehensive" | "lite"
 }
 ```
 
-**Important:** If user selects "Project repo", verify the project has its own .git folder:
-```bash
-ls -la [project-path]/.git
-```
-If no .git exists, warn the user and ask them to choose another option.
+**Note:** `commitTarget` is defined in `projects/projects.json` at the project level, not per-feature.
 
 ---
 

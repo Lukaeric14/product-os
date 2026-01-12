@@ -22,5 +22,4 @@ dist/
 *.log
 npm-debug.log*
 
-# Project repos (cloned for context, not committed)
-projects/nairon-slackapp/
+# Project repos are submodules, not gitignored

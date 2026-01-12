@@ -12,8 +12,10 @@ You are helping finalize and hand off the feature to engineers.
 1. Read `project.json` from the current feature folder to identify:
    - `mode` — comprehensive or lite (defaults to comprehensive if missing)
    - `projectId` — which project this is for
-   - `commitTarget` — where to commit files
-2. Read the project's CONTEXT.md file from `projects/[project-id]/CONTEXT.md` for project-specific context.
+2. Read `projects/projects.json` to get the project config, including:
+   - `commitTarget` — where to commit files (project-repo, product-os, or none)
+   - `path` — the project path
+3. Read the project's CONTEXT.md file from `projects/[project-id]/CONTEXT.md` for project-specific context.
 
 ## Your Task
 
@@ -51,7 +53,7 @@ If skip: Note as skipped, continue.
 
 ### Step 3: Commit and Push
 
-Read `commitTarget` from `project.json` to determine where to commit.
+Read `commitTarget` from `projects/projects.json` (under the matching project) to determine where to commit.
 
 **If commitTarget is "project-repo":**
 

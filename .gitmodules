@@ -4,3 +4,6 @@
 [submodule "projects/keylead"]
 	path = projects/keylead
 	url = https://github.com/KeyLead-Team/keylead.git
+[submodule "projects/nairon-slackapp"]
+	path = projects/nairon-slackapp
+	url = https://github.com/Lukaeric14/nairon-slackapp.git
