@@ -3,10 +3,18 @@
     {
       "id": "keylead",
       "name": "Keylead",
-      "description": "Content scheduling SaaS for real estate agents",
-      "path": "keylead",
-      "sprintsPath": "keylead/sprints",
+      "description": "Content scheduling and publishing SaaS for real estate professionals",
+      "path": "projects/keylead",
+      "sprintsPath": "projects/keylead/sprints",
       "contextFile": "projects/keylead/CONTEXT.md"
+    },
+    {
+      "id": "nairon-crm",
+      "name": "Nairon CRM",
+      "description": "LinkedIn, WhatsApp, Calendar, and Gmail integration suite for Notion",
+      "path": "projects/nairon-crm",
+      "sprintsPath": "projects/nairon-crm/sprints",
+      "contextFile": "projects/nairon-crm/CONTEXT.md"
     },
     {
       "id": "nairon-slackapp",

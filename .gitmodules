@@ -1,0 +1,6 @@
+[submodule "projects/nairon-crm"]
+	path = projects/nairon-crm
+	url = https://github.com/Lukaeric14/nairon-CRM.git
+[submodule "projects/keylead"]
+	path = projects/keylead
+	url = https://github.com/KeyLead-Team/keylead.git
