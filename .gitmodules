@@ -7,3 +7,6 @@
 [submodule "projects/nairon-slackapp"]
 	path = projects/nairon-slackapp
 	url = https://github.com/Lukaeric14/nairon-slackapp.git
+[submodule "projects/nairon-content"]
+	path = projects/nairon-content
+	url = https://github.com/Lukaeric14/nairon-content.git

@@ -1,11 +1,25 @@
 ---
 description: Initialize a new feature and capture raw inputs
-allowed-tools: Read, Write, Bash, Glob, Grep, Edit
+allowed-tools: Read, Write, Bash, Glob, Grep, Edit, TodoWrite
 ---
 
 # /start - Initialize Feature
 
-You are helping initialize a new feature for the weekly sprint. First run the frontend UI. The user will use this to track the progress of the process.
+You are helping initialize a new feature for the weekly sprint.
+
+## Progress Tracking
+
+**IMPORTANT:** Use the TodoWrite tool to track progress through this workflow.
+
+At the start, create a todo list with ALL steps:
+1. Select Project
+2. Select Mode
+3. Create Directory
+4. Create project.json
+5. (For Comprehensive) Feature Type, Import Transcript, Import Slack, Import Feedback, Capture Design Links, Summarize Inputs
+6. (For Lite) Quick Summary
+
+**Mark each step as completed IMMEDIATELY after finishing it.** This gives the user visual feedback of their progress. Mark the current step as `in_progress` when you start it.
 
 ## Your Task
 
@@ -79,6 +93,15 @@ Save the summary directly to `inputs-summary.md`:
 **Feature:** [Feature Name]
 **Mode:** Lite
 **Sprint:** YYYY-WXX
+
+## Project Selected
+Project: [Project Name] ([project-id])
+
+## Mode Selected
+Mode: Lite
+
+## Directory Created
+Feature directory created at: [sprintsPath]/YYYY-WXX/[feature-name]/
 
 ## Feature Summary
 [User's description]

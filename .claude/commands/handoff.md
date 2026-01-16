@@ -158,19 +158,25 @@ Skip notification, proceed to handoff record.
 **Date:** [Today's date]
 **Commit Target:** [project-repo/product-os/none]
 
-## Deliverables
+## Deliverables Validated
+All required deliverables have been validated:
 - [x] prd.md
-- [x/skipped] qa.md
-- [x/skipped] linear-tickets.md
-- [x/skipped] loom-outline.md
+- [x] problem-output.md (lite) / problem-statement.md (comprehensive)
+- [x] solution-output.md (lite) / develop-output.md (comprehensive)
+- [x/skipped] qa.md (comprehensive only)
+- [x/skipped] linear-tickets.md (comprehensive only)
+- [x/skipped] loom-outline.md (comprehensive only)
 
-## Links
+## Committed and Pushed
 - **Commit:** [hash or "not committed"]
-- **Loom:** [link or "skipped"]
+- **Repo:** [repo name]
+- **Branch:** main
 
-## Handoff
+## Implementation Prompt
 - **Target:** [Claude Code / Engineer / Self]
-- **Prompt/Message:** [included below if applicable]
+
+[If Claude Code, include the prompt here]
+[If Engineer, include the Slack message here]
 
 ## Remaining Manual Steps
 - [ ] [any remaining steps]

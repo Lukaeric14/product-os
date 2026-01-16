@@ -32,7 +32,7 @@ export function PhasePanel({ phaseId, isComplete, files = {}, completedSteps = {
   // For these, completion is determined by backend scanning for section headings with real content
   // Note: 'deliver' is excluded because it produces individual files (prd.md, qa.md, etc.) not sections
   const contentMarkerPhases = mode === 'lite'
-    ? ['problem', 'solution']
+    ? ['start', 'problem', 'solution', 'handoff']
     : ['discover', 'define', 'develop']
 
   // A step is complete if:

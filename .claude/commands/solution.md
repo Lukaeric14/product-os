@@ -97,7 +97,13 @@ Document key trade-offs and decisions made.
 
 Generate a focused PRD. Include wireframes from solution-output.md.
 
-**Write to `prd.md`:**
+**First, append to `solution-output.md`:**
+```markdown
+## PRD Generated
+PRD written to `prd.md` with full specification and wireframes.
+```
+
+**Then write to `prd.md`:**
 ```markdown
 # PRD: [Feature Name]
 

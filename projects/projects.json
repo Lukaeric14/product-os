@@ -28,6 +28,15 @@
       "commitTarget": "project-repo"
     },
     {
+      "id": "nairon-content",
+      "name": "Nairon Content",
+      "description": "Content management project",
+      "path": "projects/nairon-content",
+      "sprintsPath": "projects/nairon-content/sprints",
+      "contextFile": "projects/nairon-content/CONTEXT.md",
+      "commitTarget": "project-repo"
+    },
+    {
       "id": "product-os",
       "name": "Product OS",
       "description": "Sprint-based product development workflow tool using Double Diamond process",

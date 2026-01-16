@@ -41,13 +41,21 @@ const PHASE_STEP_MARKERS: Record<string, { file: string; markers: string[] }> = 
 
 // Step markers for lite mode phases
 const LITE_PHASE_STEP_MARKERS: Record<string, { file: string; markers: string[] }> = {
+  start: {
+    file: 'inputs-summary.md',
+    markers: ['Project Selected', 'Mode Selected', 'Directory Created', 'Feature Summary']
+  },
   problem: {
     file: 'problem-output.md',
     markers: ['Core Desire', 'Reasoning Chain', 'Blind Spots', 'Risks', 'Problem Statement']
   },
   solution: {
     file: 'solution-output.md',
-    markers: ['Solution Approach', 'UI Flow', 'Desktop Wireframe', 'Mobile Wireframe', 'Edge Cases', 'Trade-offs', 'Generate PRD']
+    markers: ['Solution Approach', 'UI Flow', 'Desktop Wireframe', 'Mobile Wireframe', 'Edge Cases', 'Trade-offs', 'PRD Generated']
+  },
+  handoff: {
+    file: 'handoff-complete.md',
+    markers: ['Deliverables Validated', 'Committed and Pushed', 'Implementation Prompt']
   }
 }
 

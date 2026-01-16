@@ -180,10 +180,10 @@ export const LITE_PHASES: Phase[] = [
     command: '/start',
     exitFile: 'inputs-summary.md',
     steps: [
-      { number: 1, title: 'Select Project', description: 'Choose which project this is for', deliverable: 'project.json' },
-      { number: 2, title: 'Select Mode', description: 'Comprehensive or Lite?', deliverable: 'Mode stored' },
-      { number: 3, title: 'Feature Name', description: 'Create feature directory', deliverable: 'Directory created' },
-      { number: 4, title: 'Quick Summary', description: 'Describe the feature briefly', deliverable: 'inputs-summary.md' },
+      { number: 1, title: 'Project Selected', description: 'Choose which project this is for', deliverable: 'project.json' },
+      { number: 2, title: 'Mode Selected', description: 'Comprehensive or Lite?', deliverable: 'Mode stored' },
+      { number: 3, title: 'Directory Created', description: 'Create feature directory', deliverable: 'Directory created' },
+      { number: 4, title: 'Feature Summary', description: 'Describe the feature briefly', deliverable: 'inputs-summary.md' },
     ],
   },
   {
@@ -208,12 +208,12 @@ export const LITE_PHASES: Phase[] = [
     exitFile: 'prd.md',
     steps: [
       { number: 1, title: 'Solution Approach', description: 'How will we solve it?', deliverable: 'solution-output.md' },
-      { number: 2, title: 'UI Flow Options', description: 'Brainstorm approaches', deliverable: 'Documented' },
+      { number: 2, title: 'UI Flow', description: 'Brainstorm approaches', deliverable: 'Documented' },
       { number: 3, title: 'Desktop Wireframe', description: 'ASCII wireframe', deliverable: 'ASCII wireframe' },
       { number: 4, title: 'Mobile Wireframe', description: 'ASCII wireframe', deliverable: 'ASCII wireframe' },
       { number: 5, title: 'Edge Cases', description: 'Surface all "what ifs"', deliverable: 'Edge cases list' },
       { number: 6, title: 'Trade-offs', description: 'Evaluate options', deliverable: 'Trade-off analysis' },
-      { number: 7, title: 'Generate PRD', description: 'Create PRD', deliverable: 'prd.md' },
+      { number: 7, title: 'PRD Generated', description: 'Create PRD', deliverable: 'prd.md' },
     ],
   },
   {
@@ -223,9 +223,9 @@ export const LITE_PHASES: Phase[] = [
     command: '/handoff',
     exitFile: 'handoff-complete.md',
     steps: [
-      { number: 1, title: 'Validate PRD', description: 'Check file exists', deliverable: 'Validated' },
-      { number: 2, title: 'Commit & Push', description: 'Git operations', deliverable: 'Pushed' },
-      { number: 3, title: 'Claude Code Prompt', description: 'Generate implementation prompt', deliverable: 'handoff-complete.md' },
+      { number: 1, title: 'Deliverables Validated', description: 'Check file exists', deliverable: 'Validated' },
+      { number: 2, title: 'Committed and Pushed', description: 'Git operations', deliverable: 'Pushed' },
+      { number: 3, title: 'Implementation Prompt', description: 'Generate implementation prompt', deliverable: 'handoff-complete.md' },
     ],
   },
 ]
