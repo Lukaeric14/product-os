@@ -6,10 +6,17 @@ import tailwindcss from '@tailwindcss/vite'
 import path from 'path'
 import fs from 'fs'
 
+// Category configuration interface
+interface CategoryConfig {
+  id: string
+  name: string
+}
+
 // Project configuration interface
 interface ProjectConfig {
   id: string
   name: string
+  category?: string
   description: string
   path: string
   sprintsPath: string
@@ -43,7 +50,7 @@ const PHASE_STEP_MARKERS: Record<string, { file: string; markers: string[] }> = 
 const LITE_PHASE_STEP_MARKERS: Record<string, { file: string; markers: string[] }> = {
   start: {
     file: 'inputs-summary.md',
-    markers: ['Project Selected', 'Mode Selected', 'Directory Created', 'Feature Summary']
+    markers: ['Project Selected', 'Mode Selected', 'Directory Created', 'Codebase Discovery Highlights', 'Feature Summary']
   },
   problem: {
     file: 'problem-output.md',
@@ -133,18 +140,21 @@ function getFeatureProject(featureDir: string): { projectId: string; projectName
 }
 
 // Load projects configuration
-function loadProjectsConfig(): ProjectConfig[] {
+function loadProjectsConfig(): { projects: ProjectConfig[]; categories: CategoryConfig[] } {
   const projectsJsonPath = path.resolve(__dirname, 'projects/projects.json')
   if (fs.existsSync(projectsJsonPath)) {
     try {
       const content = fs.readFileSync(projectsJsonPath, 'utf-8')
       const data = JSON.parse(content)
-      return data.projects || []
+      return {
+        projects: data.projects || [],
+        categories: data.categories || []
+      }
     } catch {
-      return []
+      return { projects: [], categories: [] }
     }
   }
-  return []
+  return { projects: [], categories: [] }
 }
 
 interface SprintData {
@@ -168,16 +178,23 @@ function sprintApiPlugin() {
   return {
     name: 'sprint-api',
     configureServer(server: ViteDevServer) {
+      // Serve categories list
+      server.middlewares.use('/__api/categories', (_req: IncomingMessage, res: ServerResponse) => {
+        const { categories } = loadProjectsConfig()
+        res.setHeader('Content-Type', 'application/json')
+        res.end(JSON.stringify(categories))
+      })
+
       // Serve projects list
       server.middlewares.use('/__api/projects', (_req: IncomingMessage, res: ServerResponse) => {
-        const projects = loadProjectsConfig()
+        const { projects } = loadProjectsConfig()
         res.setHeader('Content-Type', 'application/json')
         res.end(JSON.stringify(projects))
       })
 
       // Serve sprints data from all projects
       server.middlewares.use('/__api/sprints', (_req: IncomingMessage, res: ServerResponse) => {
-        const projects = loadProjectsConfig()
+        const { projects } = loadProjectsConfig()
         const allSprints: SprintData[] = []
 
         for (const project of projects) {

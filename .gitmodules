@@ -10,3 +10,12 @@
 [submodule "projects/nairon-content"]
 	path = projects/nairon-content
 	url = https://github.com/Lukaeric14/nairon-content.git
+[submodule "projects/luka-os"]
+	path = projects/luka-os
+	url = https://github.com/Lukaeric14/luka-OS.git
+[submodule "projects/nairon-hub"]
+	path = projects/nairon-hub
+	url = https://github.com/Lukaeric14/nairon-hub.git
+[submodule "projects/apply-nairon"]
+	path = projects/apply-nairon
+	url = https://github.com/ObaidUr-Rahmaan/apply-nairon.git

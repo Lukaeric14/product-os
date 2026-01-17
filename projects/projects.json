@@ -1,8 +1,14 @@
 {
+  "categories": [
+    { "id": "keylead", "name": "Keylead" },
+    { "id": "nairon", "name": "Nairon" },
+    { "id": "personal", "name": "Personal" }
+  ],
   "projects": [
     {
       "id": "keylead",
       "name": "Keylead",
+      "category": "keylead",
       "description": "Content scheduling and publishing SaaS for real estate professionals",
       "path": "projects/keylead",
       "sprintsPath": "projects/keylead/sprints",
@@ -12,6 +18,7 @@
     {
       "id": "nairon-crm",
       "name": "Nairon CRM",
+      "category": "nairon",
       "description": "LinkedIn, WhatsApp, Calendar, and Gmail integration suite for Notion",
       "path": "projects/nairon-crm",
       "sprintsPath": "projects/nairon-crm/sprints",
@@ -21,6 +28,7 @@
     {
       "id": "nairon-slackapp",
       "name": "Nairon Slack App",
+      "category": "nairon",
       "description": "AI task tracking and product intelligence Slack bot",
       "path": "projects/nairon-slackapp",
       "sprintsPath": "projects/nairon-slackapp/sprints",
@@ -30,6 +38,7 @@
     {
       "id": "nairon-content",
       "name": "Nairon Content",
+      "category": "nairon",
       "description": "Content management project",
       "path": "projects/nairon-content",
       "sprintsPath": "projects/nairon-content/sprints",
@@ -37,13 +46,44 @@
       "commitTarget": "project-repo"
     },
     {
+      "id": "nairon-hub",
+      "name": "Nairon Hub",
+      "category": "nairon",
+      "description": "Central hub for Nairon ecosystem",
+      "path": "projects/nairon-hub",
+      "sprintsPath": "projects/nairon-hub/sprints",
+      "contextFile": "projects/nairon-hub/CONTEXT.md",
+      "commitTarget": "project-repo"
+    },
+    {
+      "id": "apply-nairon",
+      "name": "Apply Nairon",
+      "category": "nairon",
+      "description": "Nairon application and recruitment platform",
+      "path": "projects/apply-nairon",
+      "sprintsPath": "projects/apply-nairon/sprints",
+      "contextFile": "projects/apply-nairon/README.md",
+      "commitTarget": "project-repo"
+    },
+    {
       "id": "product-os",
       "name": "Product OS",
+      "category": "personal",
       "description": "Sprint-based product development workflow tool using Double Diamond process",
       "path": ".",
       "sprintsPath": "sprints",
       "contextFile": "projects/product-os/CONTEXT.md",
       "commitTarget": "product-os"
+    },
+    {
+      "id": "luka-os",
+      "name": "Luka OS",
+      "category": "personal",
+      "description": "Personal operating system project",
+      "path": "projects/luka-os",
+      "sprintsPath": "projects/luka-os/sprints",
+      "contextFile": "projects/luka-os/CONTEXT.md",
+      "commitTarget": "project-repo"
     }
   ]
 }

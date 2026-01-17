@@ -26,9 +26,15 @@ export interface PhaseStep {
   deliverable: string
 }
 
+export interface Category {
+  id: string
+  name: string
+}
+
 export interface Project {
   id: string
   name: string
+  category?: string
   description: string
   path: string
   sprintsPath: string
@@ -51,6 +57,7 @@ export interface Feature {
 
 export interface FeatureFiles {
   'project.json'?: boolean
+  'codebase-discovery.md'?: boolean
   'inputs-summary.md'?: boolean
   'raw-input-transcript.md'?: boolean
   'raw-input-slack.md'?: boolean
@@ -83,13 +90,15 @@ export const PHASES: Phase[] = [
     exitFile: 'inputs-summary.md',
     steps: [
       { number: 1, title: 'Select Project', description: 'Choose which project this is for', deliverable: 'project.json' },
-      { number: 2, title: 'Create Directory', description: 'Set up feature folder', deliverable: 'Directory created' },
-      { number: 3, title: 'Feature Type', description: 'New feature or improvement?', deliverable: 'Type documented' },
-      { number: 4, title: 'Import Transcript', description: 'Paste stakeholder call transcript', deliverable: 'raw-input-transcript.md' },
-      { number: 5, title: 'Import Slack', description: 'Paste relevant Slack threads', deliverable: 'raw-input-slack.md' },
-      { number: 6, title: 'Import Feedback', description: 'Paste customer feedback', deliverable: 'raw-input-feedback.md' },
-      { number: 7, title: 'Design Links', description: 'Add Figma or design references', deliverable: 'Links captured' },
-      { number: 8, title: 'Summarize', description: 'Review all inputs', deliverable: 'inputs-summary.md' },
+      { number: 2, title: 'Select Mode', description: 'Comprehensive or Lite?', deliverable: 'Mode stored' },
+      { number: 3, title: 'Create Directory', description: 'Set up feature folder', deliverable: 'Directory created' },
+      { number: 4, title: 'Codebase Discovery', description: 'Scan product area for context', deliverable: 'codebase-discovery.md' },
+      { number: 5, title: 'Feature Type', description: 'New feature or improvement?', deliverable: 'Type documented' },
+      { number: 6, title: 'Import Transcript', description: 'Paste stakeholder call transcript', deliverable: 'raw-input-transcript.md' },
+      { number: 7, title: 'Import Slack', description: 'Paste relevant Slack threads', deliverable: 'raw-input-slack.md' },
+      { number: 8, title: 'Import Feedback', description: 'Paste customer feedback', deliverable: 'raw-input-feedback.md' },
+      { number: 9, title: 'Design Links', description: 'Add Figma or design references', deliverable: 'Links captured' },
+      { number: 10, title: 'Summarize', description: 'Review all inputs', deliverable: 'inputs-summary.md' },
     ],
   },
   {
@@ -183,7 +192,8 @@ export const LITE_PHASES: Phase[] = [
       { number: 1, title: 'Project Selected', description: 'Choose which project this is for', deliverable: 'project.json' },
       { number: 2, title: 'Mode Selected', description: 'Comprehensive or Lite?', deliverable: 'Mode stored' },
       { number: 3, title: 'Directory Created', description: 'Create feature directory', deliverable: 'Directory created' },
-      { number: 4, title: 'Feature Summary', description: 'Describe the feature briefly', deliverable: 'inputs-summary.md' },
+      { number: 4, title: 'Codebase Discovery', description: 'Scan product area for context', deliverable: 'codebase-discovery.md' },
+      { number: 5, title: 'Feature Summary', description: 'Describe the feature briefly', deliverable: 'inputs-summary.md' },
     ],
   },
   {

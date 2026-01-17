@@ -1,6 +1,6 @@
 ---
 description: Initialize a new feature and capture raw inputs
-allowed-tools: Read, Write, Bash, Glob, Grep, Edit, TodoWrite
+allowed-tools: Read, Write, Bash, Glob, Grep, Edit, TodoWrite, Task
 ---
 
 # /start - Initialize Feature
@@ -16,8 +16,9 @@ At the start, create a todo list with ALL steps:
 2. Select Mode
 3. Create Directory
 4. Create project.json
-5. (For Comprehensive) Feature Type, Import Transcript, Import Slack, Import Feedback, Capture Design Links, Summarize Inputs
-6. (For Lite) Quick Summary
+5. Codebase Discovery (both modes - scan product area)
+6. (For Comprehensive) Feature Type, Import Transcript, Import Slack, Import Feedback, Capture Design Links, Summarize Inputs
+7. (For Lite) Quick Summary
 
 **Mark each step as completed IMMEDIATELY after finishing it.** This gives the user visual feedback of their progress. Mark the current step as `in_progress` when you start it.
 
@@ -75,13 +76,132 @@ Create the `project.json` file in the feature folder:
 
 **Note:** `commitTarget` is defined in `projects/projects.json` at the project level, not per-feature.
 
+### Step 5: Codebase Discovery (Both Modes)
+
+**This step runs for both Comprehensive and Lite modes.** It scans the project codebase to understand the current implementation and gather context for the feature work.
+
+**5a. Ask about product area:**
+
+Ask: "Which product area should I explore? (e.g., billing, dashboard, onboarding, settings)"
+
+Get a specific area of the product to focus the exploration on.
+
+**5b. Ask about focus areas:**
+
+Ask: "Is there anything specific you'd like me to focus on?"
+
+Present options:
+1. **UX & User Flows** — Current user interactions, screens, navigation patterns
+2. **Data & Schema** — Database models, API responses, data structures
+3. **Business Logic** — Core functionality, rules, validations
+4. **All of the above** — Comprehensive scan (takes longer)
+
+Allow multiple selections.
+
+**5c. Scan the codebase:**
+
+Based on the project's `path` from `projects/projects.json`, explore:
+
+- **For UX focus:** Look at components, pages, routes, UI patterns, form flows
+- **For Data focus:** Look at schema files, types, API routes, database models, state management
+- **For Business Logic focus:** Look at services, utilities, validation logic, business rules
+
+Use the Explore agent to thoroughly investigate the product area. Search for:
+- Related components and pages
+- Type definitions and interfaces
+- API endpoints
+- Database schemas/models
+- State management patterns
+- Existing test files (to understand expected behavior)
+
+**5d. Write the discovery report:**
+
+Create `codebase-discovery.md` with this structure:
+
+```markdown
+# Codebase Discovery Report
+
+**Product Area:** [area name]
+**Focus:** [selected focus areas]
+**Project:** [project name]
+**Date:** [date]
+
+## Current Implementation Overview
+
+[High-level summary of how this area works today]
+
+## UX & User Flows
+*(if UX was selected)*
+
+### Key Screens/Components
+- [Component name] — [what it does] — `path/to/file.tsx`
+
+### User Journey
+1. [Step 1]
+2. [Step 2]
+...
+
+### Current Pain Points or Gaps
+- [observations about UX limitations]
+
+## Data & Schema
+*(if Data was selected)*
+
+### Key Types/Interfaces
+```typescript
+// Relevant type definitions
+```
+
+### Database Models
+- [Model name] — [description]
+
+### API Endpoints
+| Endpoint | Method | Purpose |
+|----------|--------|---------|
+| /api/... | GET | ... |
+
+### Data Flow
+[How data moves through the system]
+
+## Business Logic
+*(if Business Logic was selected)*
+
+### Core Rules
+- [Rule 1]
+- [Rule 2]
+
+### Validations
+- [Validation 1]
+
+### Key Functions
+- `functionName()` in `path/to/file.ts` — [what it does]
+
+## Implications for New Feature
+
+[Based on discovery, what should we keep in mind?]
+- Patterns to follow
+- Constraints to respect
+- Integration points
+- Potential conflicts or dependencies
+
+## Questions to Explore
+
+[Questions that emerged during discovery that might inform the feature]
+```
+
+Save to `codebase-discovery.md` in the feature folder.
+
+**5e. Confirm:**
+
+Share a brief summary of key findings and ask: "I've documented the current implementation. Ready to continue with gathering inputs?"
+
 ---
 
 ## If Lite Mode
 
 For lite features, skip the detailed input gathering. Instead:
 
-### Step 5 (Lite): Quick Summary
+### Step 6 (Lite): Quick Summary
 
 Ask: "Briefly describe the feature — what's the problem and what do you want to build?"
 
@@ -103,6 +223,14 @@ Mode: Lite
 ## Directory Created
 Feature directory created at: [sprintsPath]/YYYY-WXX/[feature-name]/
 
+## Codebase Discovery Highlights
+[Key findings from the codebase discovery - summarize the most relevant points]
+- Current implementation: [brief summary]
+- Key patterns to follow: [list]
+- Integration points: [list]
+
+See `codebase-discovery.md` for full details.
+
 ## Feature Summary
 [User's description]
 
@@ -120,19 +248,19 @@ Confirm: "Inputs captured. Ready to run `/problem`?"
 
 Continue with detailed input gathering:
 
-### Step 5: Feature Type
+### Step 6: Feature Type
 
 Ask: "Is this a new feature or improvement to existing?"
 
 Document the answer.
 
-### Step 6: Import Transcript
+### Step 7: Import Transcript
 
 Ask: "Do you have a transcript from the stakeholder call? Paste it here. (or 'skip')"
 
 Save to `raw-input-transcript.md` if provided.
 
-### Step 7: Import Slack Threads
+### Step 8: Import Slack Threads
 
 Ask: "Any Slack threads related to this feature? Paste them here. (or 'skip')"
 
@@ -140,24 +268,25 @@ If user pastes a screenshot, read it and transcribe the content.
 
 Save to `raw-input-slack.md` if provided.
 
-### Step 8: Import Customer Feedback
+### Step 9: Import Customer Feedback
 
 Ask: "Any customer feedback driving this? Paste it here. (or 'skip')"
 
 Save to `raw-input-feedback.md` if provided.
 
-### Step 9: Capture Design Links
+### Step 10: Capture Design Links
 
 Ask: "Any existing Figma links or design references? (or 'skip')"
 
 Note these for later.
 
-### Step 10: Summarize Inputs
+### Step 11: Summarize Inputs
 
 Summarize everything captured:
 - Project and feature name
 - Commit target
 - Feature type
+- Key points from codebase discovery
 - Key points from transcript
 - Key points from Slack
 - Key points from feedback
@@ -172,6 +301,7 @@ Confirm: "Inputs captured. Ready to run `/discover`?"
 ```
 [sprintsPath]/YYYY-WXX/[feature-name]/
 ├── project.json
+├── codebase-discovery.md
 ├── raw-input-transcript.md (if provided)
 ├── raw-input-slack.md (if provided)
 ├── raw-input-feedback.md (if provided)
