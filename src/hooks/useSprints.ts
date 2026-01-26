@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import type { Sprint, PhaseId, FeatureFiles, Project, FeatureMode, AnyPhaseId, LitePhaseId } from '@/types/sprint'
+import type { Sprint, PhaseId, FeatureFiles, Project, Category, FeatureMode, AnyPhaseId, LitePhaseId } from '@/types/sprint'
 
 const POLL_INTERVAL = 2000 // 2 seconds
 
@@ -183,6 +183,37 @@ export function useProjects() {
   }, [])
 
   return { projects, loading }
+}
+
+export function useCategories() {
+  const [categories, setCategories] = useState<Category[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    let mounted = true
+
+    const fetchCategories = async () => {
+      try {
+        const res = await fetch('/__api/categories')
+        const data = await res.json()
+        if (mounted) {
+          setCategories(data)
+          setLoading(false)
+        }
+      } catch (err) {
+        console.error('Failed to fetch categories:', err)
+        if (mounted) setLoading(false)
+      }
+    }
+
+    fetchCategories()
+
+    return () => {
+      mounted = false
+    }
+  }, [])
+
+  return { categories, loading }
 }
 
 export function useFeature(week: string, name: string) {

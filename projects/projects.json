@@ -66,6 +66,16 @@
       "commitTarget": "project-repo"
     },
     {
+      "id": "nairon-sales",
+      "name": "Nairon Sales",
+      "category": "nairon",
+      "description": "Sales platform for Nairon ecosystem",
+      "path": "projects/nairon-sales",
+      "sprintsPath": "projects/nairon-sales/sprints",
+      "contextFile": "projects/nairon-sales/CONTEXT.md",
+      "commitTarget": "project-repo"
+    },
+    {
       "id": "product-os",
       "name": "Product OS",
       "category": "personal",

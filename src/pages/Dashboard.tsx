@@ -4,7 +4,7 @@ import { ChevronRightIcon, CalendarIcon } from 'lucide-react'
 import { AppLayout } from '@/components/AppLayout'
 import { EmptyState } from '@/components/EmptyState'
 import { Card, CardContent } from '@/components/ui/card'
-import { useSprints, useProjects } from '@/hooks/useSprints'
+import { useSprints, useProjects, useCategories } from '@/hooks/useSprints'
 import { getPhaseForMode, getPhasesForMode } from '@/types/sprint'
 import { cn } from '@/lib/utils'
 import type { Feature } from '@/types/sprint'
@@ -65,9 +65,20 @@ function FeatureCard({ feature }: { feature: Feature }) {
 export function Dashboard() {
   const { sprints, loading: sprintsLoading } = useSprints()
   const { projects, loading: projectsLoading } = useProjects()
+  const { categories, loading: categoriesLoading } = useCategories()
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null)
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null)
 
-  const loading = sprintsLoading || projectsLoading
+  const loading = sprintsLoading || projectsLoading || categoriesLoading
+
+  // Set default category when categories load
+  const effectiveCategoryId = selectedCategoryId || (categories.length > 0 ? categories[0].id : null)
+
+  // Filter projects by selected category
+  const filteredProjects = useMemo(() => {
+    if (!effectiveCategoryId) return projects
+    return projects.filter(p => p.category === effectiveCategoryId)
+  }, [projects, effectiveCategoryId])
 
   // Get all features across all sprints, sorted by recency (newest first)
   const allFeatures = useMemo(() => {
@@ -79,8 +90,13 @@ export function Dashboard() {
     return features.sort((a, b) => b.sprintWeek.localeCompare(a.sprintWeek))
   }, [sprints])
 
-  // Set default selected project once projects load
-  const effectiveProjectId = selectedProjectId || (projects.length > 0 ? projects[0].id : null)
+  // Reset selected project when category changes (if current project is not in new category)
+  const effectiveProjectId = useMemo(() => {
+    if (selectedProjectId && filteredProjects.some(p => p.id === selectedProjectId)) {
+      return selectedProjectId
+    }
+    return filteredProjects.length > 0 ? filteredProjects[0].id : null
+  }, [selectedProjectId, filteredProjects])
 
   // Get features for the effective project
   const displayFeatures = useMemo(() => {
@@ -100,7 +116,12 @@ export function Dashboard() {
 
   if (!hasFeatures) {
     return (
-      <AppLayout showPhaseNav={false}>
+      <AppLayout
+        showPhaseNav={false}
+        categories={categories}
+        selectedCategory={effectiveCategoryId}
+        onCategoryChange={setSelectedCategoryId}
+      >
         <div className="space-y-8">
           <div className="text-center">
             <h1 className="text-3xl font-bold text-stone-900 dark:text-stone-100">
@@ -117,7 +138,12 @@ export function Dashboard() {
   }
 
   return (
-    <AppLayout showPhaseNav={false}>
+    <AppLayout
+      showPhaseNav={false}
+      categories={categories}
+      selectedCategory={effectiveCategoryId}
+      onCategoryChange={setSelectedCategoryId}
+    >
       <div className="space-y-6">
         {/* Header */}
         <div>
@@ -129,11 +155,11 @@ export function Dashboard() {
           </p>
         </div>
 
-        {/* Project Tabs */}
-        {projects.length > 0 && (
+        {/* Project Tabs - filtered by category */}
+        {filteredProjects.length > 0 && (
           <div className="flex gap-1 border-b border-stone-200 dark:border-stone-800">
-            {projects.map((project) => {
-              const isActive = (selectedProjectId || projects[0].id) === project.id
+            {filteredProjects.map((project) => {
+              const isActive = effectiveProjectId === project.id
               const projectFeatureCount = allFeatures.filter(f => f.projectId === project.id).length
 
               return (

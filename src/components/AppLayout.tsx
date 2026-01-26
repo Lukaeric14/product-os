@@ -1,8 +1,15 @@
 import type { ReactNode } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Layers, ArrowLeft } from 'lucide-react'
+import { Layers, ArrowLeft, ChevronDown } from 'lucide-react'
 import { ThemeToggle } from './ThemeToggle'
 import { Button } from '@/components/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import type { Category } from '@/types/sprint'
 
 interface AppLayoutProps {
   children: ReactNode
@@ -14,6 +21,12 @@ interface AppLayoutProps {
   backLabel?: string
   /** Whether to show the phase nav (default: false) */
   showPhaseNav?: boolean
+  /** Available categories for filtering */
+  categories?: Category[]
+  /** Currently selected category ID */
+  selectedCategory?: string | null
+  /** Callback when category changes */
+  onCategoryChange?: (categoryId: string | null) => void
 }
 
 export function AppLayout({
@@ -21,11 +34,17 @@ export function AppLayout({
   title,
   backTo,
   backLabel = 'Back',
+  categories,
+  selectedCategory,
+  onCategoryChange,
 }: AppLayoutProps) {
   const navigate = useNavigate()
 
   // Determine if this is a sub-page (has back navigation)
   const isSubPage = !!backTo
+
+  // Find the selected category name
+  const selectedCategoryName = categories?.find(c => c.id === selectedCategory)?.name || 'All Projects'
 
   return (
     <div className="min-h-screen bg-background animate-fade-in flex flex-col">
@@ -69,8 +88,31 @@ export function AppLayout({
                 </span>
               </div>
 
-              {/* Theme Toggle */}
-              <ThemeToggle />
+              {/* Category Dropdown + Theme Toggle */}
+              <div className="flex items-center gap-2">
+                {categories && categories.length > 0 && onCategoryChange && (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="outline" size="sm" className="gap-1.5">
+                        {selectedCategoryName}
+                        <ChevronDown className="w-3.5 h-3.5 opacity-50" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      {categories.map((category) => (
+                        <DropdownMenuItem
+                          key={category.id}
+                          onClick={() => onCategoryChange(category.id)}
+                          className={selectedCategory === category.id ? 'bg-stone-100 dark:bg-stone-800' : ''}
+                        >
+                          {category.name}
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                )}
+                <ThemeToggle />
+              </div>
             </div>
           )}
         </div>

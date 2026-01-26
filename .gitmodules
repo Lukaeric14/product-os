@@ -19,3 +19,6 @@
 [submodule "projects/apply-nairon"]
 	path = projects/apply-nairon
 	url = https://github.com/ObaidUr-Rahmaan/apply-nairon.git
+[submodule "projects/nairon-sales"]
+	path = projects/nairon-sales
+	url = https://github.com/Lukaeric14/nairon-sales.git
